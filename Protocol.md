@@ -170,4 +170,6 @@
 
 * Next, I want to create a common UI base for the Android and Desktop apps
 
-  * 
+  * It took some time, but there weren't really any problems along the way
+  * Now I have a shared UI based on Compose that works on both the Desktop and the Android version
+  * Next, I want to spend a bit of time polishing that shared view, on one hand so it looks nice, but on the other hand because I figure I can use some training with compose
