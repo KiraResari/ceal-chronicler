@@ -4,7 +4,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import androidx.compose.material.*
+import com.tri_tail.ceal_chronicler.ui.MainView
 
 fun main() {
     application {
@@ -16,7 +16,7 @@ fun main() {
             title = "Ceal Chronicler"
         ) {
             Surface(modifier = Modifier.fillMaxSize()) {
-                Text(text = "Welcome to the Ceal Chronicler")
+                MainView()
             }
         }
     }

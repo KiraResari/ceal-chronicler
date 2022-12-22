@@ -41,7 +41,11 @@
 
     * I'll try to break down what needs to be done into a squence of steps here:
 
-      1. In the `shared/build.gradle.kts`, in the `kotlin` block, after `android()`, add:
+      1. Install the `Kotlin Multiplatform Mobile` and `Compose Multiplatform IDE Support` plugins in Android Studio
+
+      2. Create a new `Kotlin Multiplatform App` project (under `Phone and Tablet`)
+
+      3. In the `shared/build.gradle.kts`, in the `kotlin` block, after `android()`, add:
 
          - ````kotlin
            jvm("desktop"){
@@ -51,9 +55,9 @@
            }
            ````
 
-      2. Add a new `desktop` folder at the top level of the app
+      4. Add a new `desktop` folder at the top level of the app
 
-      3. Add a new file `build.gradle.kts` into the `desktop` folder, and fill it with this content:
+      5. Add a new file `build.gradle.kts` into the `desktop` folder, and fill it with this content:
 
          - ````kotlin
            import org.jetbrains.compose.compose
@@ -105,15 +109,15 @@
            }
            ````
 
-      4. On the top level, in the `settings.gradle.kts` add `include(":desktop")` at the very end
+      6. On the top level, in the `settings.gradle.kts` add `include(":desktop")` at the very end
 
-      5. Click on "sync now" (Or `File > Sync project with gradle files`)
+      7. Click on "sync now" (Or `File > Sync project with gradle files`)
 
          - After the sync, the `desktop` folder should now be recognized as a module, indicated by a little square at the bottom right of the folder icon
 
-      6. In the `desktop` module, create the folder chain `src/jvmMain/kotlin`
+      8. In the `desktop` module, create the folder chain `src/jvmMain/kotlin`
 
-      7. In the just created `kotlin` folder create the Kotlin file `Main`, and fill it as follows:
+      9. In the just created `kotlin` folder create the Kotlin file `Main`, and fill it as follows:
 
          - ````kotlin
            import androidx.compose.foundation.layout.fillMaxSize
@@ -141,25 +145,29 @@
            }
            ````
 
-      8. Add a run configuration of type `Gradle` with the following settings:
+      10. Add a run configuration of type `Gradle` with the following settings:
 
-         - **Name**: "Desktop"
-         - **Run**: "run"
-         - **Gradle Project:** "ceal-chronicler:desktop"
+          - **Name**: "Desktop"
+          - **Run**: "run"
+          - **Gradle Project:** "ceal-chronicler:desktop"
 
-      9. If you started this from a KMM template, you will also have to create the file `shared/src/desktopMain/kotiln/com.tri_tail.ceal_chronicler/Platform.kt`, and fill it with this:
+      11. If you started this from a KMM template, you will also have to create the file `shared/src/desktopMain/kotiln/com.tri_tail.ceal_chronicler/Platform.kt`, and fill it with this:
 
-         - ``````kotlin
-           package com.tri_tail.ceal_chronicler
-           
-           class DesktopPlatform : Platform {
-               override val name: String = "Desktop"
-           
-           }
-           
-           actual fun getPlatform(): Platform = DesktopPlatform()
-           ``````
+          - ``````kotlin
+            package com.tri_tail.ceal_chronicler
+            
+            class DesktopPlatform : Platform {
+                override val name: String = "Desktop"
+            
+            }
+            
+            actual fun getPlatform(): Platform = DesktopPlatform()
+            ``````
 
-      10. You should now be able to run the desktop app
+      12. You should now be able to run the desktop app
+
+  * Anyway, with that, I figure the basic project setup is complete
+
+* Next, I want to create a common UI base for the Android and Desktop apps
 
   * 
