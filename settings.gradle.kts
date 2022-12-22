@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "Ceal_Chronicler"
 include(":androidApp")
 include(":shared")
+include(":desktop")
