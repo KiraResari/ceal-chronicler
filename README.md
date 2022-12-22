@@ -1,4 +1,4 @@
-![Ceal Chronicler Logo](Ceal Chronicler Logo.png)
+![Ceal Chronicler Logo](https://github.com/KiraResari/ceal-chronicler/blob/main/Ceal%20Chronicler%20Logo.png)
 
 # The Ceal Chronicler
 
