@@ -19,6 +19,9 @@ android {
         }
     }
 }
+dependencies {
+    implementation("androidx.compose.ui:ui-graphics:1.3.2")
+}
 
 kotlin {
     android()

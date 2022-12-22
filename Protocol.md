@@ -173,3 +173,10 @@
   * It took some time, but there weren't really any problems along the way
   * Now I have a shared UI based on Compose that works on both the Desktop and the Android version
   * Next, I want to spend a bit of time polishing that shared view, on one hand so it looks nice, but on the other hand because I figure I can use some training with compose
+    * I now did that too, and at this point I have to note that so far it feels like the Compose features are a lot like what I got used to in Rust last year, but with less lifecycle horror
+  * While playing around with that, I also cane across this documentation, which I imagine might come in handy:
+    * https://developer.android.com/jetpack/compose/documentation
+
+
+
+# ⚓
