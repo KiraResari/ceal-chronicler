@@ -210,6 +210,181 @@
 
   * Looks like that fixed it
 
+* Now, next I want to improve the title screen by adding the logo that I prepared
+
+  * That won't do much for the functionality, but I just know it'll work wonders for my motivation
+
+  * Also, this way I'll learn how to integrate pictures
+
+  * This might be a good place to start for this:
+
+    * https://developer.android.com/jetpack/compose/graphics/images/loading
+    * Hmm, unfortunately, that's not really helpful
+
+  * Maybe this will be better?
+
+    * https://developer.android.com/codelabs/basic-android-kotlin-compose-add-images#3
+    * Okay, based on that, I _think_ the image needs to go in `ceal-chronicler\shared-ui\res\drawables`
+    * Hmm, that doesn't really work either
+
+  * The theory is all well and good, but in practice it appears there are problems with the fact that I'm not on android, and as such the `R` class does not seem to exist, meaning this claim does not apply:
+
+    * > An `R` class is an automatically generated class by Android that contains the IDs of all resources in the project
+
+  * Or am I missing a dependency somewhere?
+
+  * Maybe this full example here will help?
+
+    * https://github.com/Foso/Jetpack-Compose-Playground/blob/master/app/src/main/java/de/jensklingenberg/jetpackcomposeplayground/mysamples/github/foundation/ImageResourceDemo.kt
+    * Not really...
+
+  * Maybe this will help?
+
+    * https://luisramos.dev/how-to-share-resources-kmm
+    * That seems horrible! No!
+
+  * How about this plugin?
+
+    * https://github.com/icerockdev/moko-resources
+    * Nope, I'm not making any progress there either
+    * I have now written a help request about that here:
+      * https://github.com/icerockdev/moko-resources/issues/398
+
+  * Ugggh! This is absolutely infuriating! Adding pictures should be one of the simplest things there is in app design! Seeing it be this complicated and unintuitive does not bode well at all
+
+  * Next try. Will this help?
+
+    * https://nrobir.medium.com/uploading-images-in-kotlin-multiplatform-ecf87e866505
+
+    * Hmm, nope, that only seems to be for images that are uploaded to the app, which is different from what I need
+
+    * But let me have a closer look at the source code here because he also mentioned app icons:
+
+      * https://github.com/halcyonmobile/MultiplatformPlayground
+
+      * Hmm, it would seem that one uses a plugin called "dev.icerock.mobile.multiplatform-resources", which is somewhat, but not quite the same as the moko-Plugin that I just tried to get to run
+
+      * I also note that it features that `MR` folder for resources that was mentioned in the other thing
+
+      * I tried implementing that, but now I get this error:
+
+        * ````
+          E:\projects\ceal-chronicler\shared-ui\src\main\AndroidManifest.xml (Das System kann die angegebene Datei nicht finden)
+          ````
+
+        * ...why? Just why?
+
+        * Why is it looking for a file like that now, and why there? This has nothing to do with anything, and I never asked it to look for that file there, and it doesn't belong there either
+
+        * Why?
+
+        * WHYYYYYYYYYYYYYYYY????????????????????
+
+      * The problem is that this project, and literally ALL other projects are laid out completely different than mine
+
+      * But then maybe that's the problem
+
+      * Let me check out that project and see if it runs for me
+
+        * Well, for starters, I had to upgrade the project since it was incompatible with my Android Studio
+        * And that's taking literally forever =>,<=
+
+      * Okay, so scratch that, this one does not feature desktop =>,<=
+
+  * Meanwhile, I'm having a look at this:
+
+    * https://jamiecraane.dev/2021/07/27/resource_images_kmm/
+    * Uggh, no! That's also *way* too complicated =>,<=
+
+* I need a break
+
+* Let me just try to set up the `buildSrc` module now, because I've seen that in a number of projects now, and I think it's a good thing to have, and I feel like I can actually do that by myself
+
+  * And even this is turning into a nightmare
+
+  * This sucks! I am at the very beginning of the project, and yet it feels like I've already completely lost control over it =>,<=
+
+  * Now I get this error message:
+
+    * ````
+      Caused by: org.gradle.api.internal.artifacts.ivyservice.DefaultLenientConfiguration$ArtifactResolveException: Could not resolve all files for configuration ':androidApp:debugRuntimeClasspath'.
+      ````
+
+    * Why?
+
+    * ```
+      org.gradle.internal.resolve.ModuleVersionNotFoundException: Could not find androidx.compose.ui:ui-graphics:1.2.2.
+      ```
+
+    * Could there be two compose versions?
+
+    * I think in my original project I had 1.2.2 and 1.3.0 mixed for some reason
+
+    * so, just checked, for `androidx.compose.ui:ui-graphic`, the correct version would be 1.3.2
+
+    * Next is this:
+
+      * ````
+        org.gradle.internal.resolve.ModuleVersionNotFoundException: Could not find androidx.compose.foundation:foundation:1.3.2.
+        ````
+
+      * That one only goes up to 1.3.1
+
+      * So let's just make all the compose things 1.3.1 for better compatability
+
+  * Okay, so after way more trouble than anticipated (again), I have now finished this, and everything seems to work alright again
+
 
 
 # ⚓
+
+
+
+# Kotlin Multiplatform Pros & Cons
+
+## Pros
+
+* You can use Kotlin Compose to create frontends that will work on both Android and Desktop, including iOS Desktop
+  * For iOS Mobile, you need frontend code written in Swift though (as far as I can tell)
+
+## Cons
+
+* Long build times
+  * 10-minute waits on project sync-ups
+  * 2-minute wait on daily start-up
+  * Regular wait times during project builds and gradle refreshes
+
+* I'm having considerable trouble even just with the Tutorials, which makes me not at all optimisitic about building an actual production app with this
+* Setting up a project seems overly complicated
+  * Regularly getting project configuration issues, such as modules not being recognized as such, and it apparently is impossible to tell the IDE that a folder is a module
+
+* Large file sizes (129 MB for a program that barely does anything)
+
+* Multiplatform support for resources is not natively implemented
+
+
+
+# Knowledgebase
+
+## Bugfixes
+
+### Module is not recognized
+
+**Symptoms**
+
+* A folder that is supposed to be a module is not recognized as such
+
+**Cause**
+
+* Possibly a typo
+* For a folder to be recognized as a module, the `settings.gradle.kts` has to have an `include` statement for that folder
+* If either the module folder or the include statement  have a typo, then the module will not be recognized
+* Example:
+  * Folder: `desktop`
+  * Include statement: `include(":dektop")`⚡
+
+**Fix**
+
+* Make sure the module folder name and the module import statement are the same and have no typos
+
+# 

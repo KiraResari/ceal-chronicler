@@ -2,18 +2,18 @@ import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.compose") version "1.2.2"
+    kotlin(Dependencies.Plugins.kotlinMultiplatform)
+    id(Dependencies.Plugins.compose).version(Versions.compose)
 }
 
-group = "com.tri_tail.ceal_chronicler"
-version = "1.0.0"
+group = Namespaces.cealChronicler
+version = Versions.cealChronicler
 
 kotlin {
     jvm {
         withJava()
         compilations.all {
-            kotlinOptions.jvmTarget = "11"
+            kotlinOptions.jvmTarget = Versions.jvm
         }
     }
     sourceSets {
@@ -41,7 +41,7 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Ceal_Chronicler"
             macOS {
-                bundleID = "com.tri_tail.ceal_chronicler"
+                bundleID = Namespaces.cealChronicler
             }
         }
     }

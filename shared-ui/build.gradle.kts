@@ -1,17 +1,15 @@
-import org.jetbrains.compose.compose
-
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    id("org.jetbrains.compose") version "1.2.2"
+    kotlin(Dependencies.Plugins.kotlinMultiplatform)
+    id(Dependencies.Plugins.androidLibrary)
+    id(Dependencies.Plugins.compose).version(Versions.compose)
 }
 
 android {
-    namespace = "com.tri_tail.ceal_chronicler.android"
-    compileSdk =  32
+    namespace = Namespaces.cealChroniclerAndroid
+    compileSdk =  Versions.sdk
     defaultConfig {
-        minSdk = 21
-        targetSdk = 32
+        minSdk = Versions.sdk
+        targetSdk = Versions.sdk
     }
     buildTypes {
         getByName("release") {
@@ -20,14 +18,14 @@ android {
     }
 }
 dependencies {
-    implementation("androidx.compose.ui:ui-graphics:1.3.2")
+    implementation(Dependencies.Compose.uiGraphics)
 }
 
 kotlin {
     android()
     jvm("desktop") {
         compilations.all {
-            kotlinOptions.jvmTarget = "11"
+            kotlinOptions.jvmTarget = Versions.jvm
         }
     }
 

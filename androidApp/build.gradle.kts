@@ -1,15 +1,15 @@
 plugins {
-    id("com.android.application")
-    kotlin("android")
+    id(Dependencies.Plugins.androidApplication)
+    kotlin(Dependencies.Plugins.kotlinAndroid)
 }
 
 android {
-    namespace = "com.tri_tail.ceal_chronicler.android"
-    compileSdk = 33
+    namespace = Namespaces.cealChroniclerAndroid
+    compileSdk = Versions.sdk
     defaultConfig {
-        applicationId = "com.tri_tail.ceal_chronicler.android"
-        minSdk = 33
-        targetSdk = 33
+        applicationId = Namespaces.cealChroniclerAndroid
+        minSdk = Versions.sdk
+        targetSdk = Versions.sdk
         versionCode = 1
         versionName = "1.0"
     }
@@ -17,7 +17,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.0"
+        kotlinCompilerExtensionVersion = Versions.androidCompose
     }
     packagingOptions {
         resources {
@@ -34,10 +34,9 @@ android {
 dependencies {
     implementation(project(":shared"))
     implementation(project(":shared-ui"))
-    implementation("androidx.compose.ui:ui:1.2.1")
-    implementation("androidx.compose.ui:ui-tooling:1.2.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.2.1")
-    implementation("androidx.compose.foundation:foundation:1.2.1")
-    implementation("androidx.compose.material:material:1.2.1")
-    implementation("androidx.activity:activity-compose:1.5.1")
+    implementation(Dependencies.Compose.ui)
+    implementation(Dependencies.Compose.uiTooling)
+    implementation(Dependencies.Compose.foundation)
+    implementation(Dependencies.Compose.material)
+    implementation(Dependencies.activityCompose)
 }
