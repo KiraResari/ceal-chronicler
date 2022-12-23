@@ -177,6 +177,39 @@
   * While playing around with that, I also cane across this documentation, which I imagine might come in handy:
     * https://developer.android.com/jetpack/compose/documentation
 
+* This is as far as I'm getting with this today
+
+
+
+# 23-Dec-2022
+
+* Now continuing with this
+
+* Last time, I managed to set up the project, and got it running to the point where I now have a shared UI between Android and Desktop that displays a little welcome message
+
+* I have to point out again that starting the project takes time every day =>,<=
+
+  * As in, it takes Kotlin/Android studio several minutes to load the project, which makes the whole framework feel a bit sluggish
+
+* Oh, good thing I checked, because I just noticed the android app is no longer starting
+
+  * The error that happens is:
+
+    * ````
+        1.  Dependency 'androidx.compose.ui:ui-graphics:1.3.2' requires libraries and applications that
+            depend on it to compile against version 33 or later of the
+            Android APIs.
+      
+            :androidApp is currently compiled against android-32.
+      
+            Recommended action: Update this project to use a newer compileSdkVersion
+            of at least 33, for example 33.
+      ````
+
+    * I now adjusted the `compileSdk`, `minSdk` and `targetSdk` in the `androidApp/build.gradle.kts` to "33"
+
+  * Looks like that fixed it
+
 
 
 # ⚓

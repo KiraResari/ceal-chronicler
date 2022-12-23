@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace = "com.tri_tail.ceal_chronicler.android"
-    compileSdk = 32
+    compileSdk = 33
     defaultConfig {
         applicationId = "com.tri_tail.ceal_chronicler.android"
-        minSdk = 21
-        targetSdk = 32
+        minSdk = 33
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
     }
