@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.tri_tail.ceal_chronicler.theme.AppTheme
 import com.tri_tail.ceal_chronicler.ui.TitleScreen
-import com.tri_tail.ceal_chronicler.ui.character_screen.CharacterScreen
+import com.tri_tail.ceal_chronicler.ui.characters.DisplayCharacterSelector
 
 @Composable
 fun MainView() {
@@ -13,7 +13,7 @@ fun MainView() {
     AppTheme {
         when(mainViewState.value){
             MainViewState.TITLE -> TitleScreen(mainViewState)
-            MainViewState.CHARACTER -> CharacterScreen()
+            MainViewState.CHARACTER -> DisplayCharacterSelector()
         }
     }
 }
