@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.tri_tail.ceal_chronicler.characters.Character
@@ -56,9 +58,10 @@ fun DisplayCharacterScreen(selectedCharacter: MutableState<Optional<Character>>)
                 textAlign = TextAlign.Start
             )
             Button(
-                onClick = { selectedCharacter.value = Optional.empty() }
+                onClick = { selectedCharacter.value = Optional.empty() },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
             ) {
-                Text(text = "Back to character selection")
+                Text(text = "↩ Back")
             }
         }
     }

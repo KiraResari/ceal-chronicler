@@ -28,6 +28,7 @@ object Dependencies{
         const val preview = "androidx.compose.ui:ui-tooling-preview:${Versions.androidCompose}"
         const val foundation = "androidx.compose.foundation:foundation:${Versions.androidCompose}"
         const val material = "androidx.compose.material:material:${Versions.androidCompose}"
+        const val material_desktop = "androidx.compose.material:material-desktop:${Versions.androidCompose}"
         const val material_icons = "androidx.compose.material:material-icons-extended:${Versions.androidCompose}"
         const val runtime = "androidx.compose.runtime:runtime:${Versions.androidCompose}"
         const val compiler = "androidx.compose.compiler:compiler:${Versions.androidCompose}"

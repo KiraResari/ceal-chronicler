@@ -19,6 +19,8 @@ android {
 }
 dependencies {
     implementation(Dependencies.Compose.uiGraphics)
+    implementation(Dependencies.Compose.material)
+    implementation(Dependencies.Compose.material_desktop)
 }
 
 kotlin {
