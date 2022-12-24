@@ -50,6 +50,8 @@ kotlin {
         val commonTest by getting
         val androidMain by getting {
             dependencies {
+                api(Dependencies.Compose.runtime)
+                api(Dependencies.Compose.ui)
             }
         }
         val desktopMain by getting
