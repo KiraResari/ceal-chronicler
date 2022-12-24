@@ -1,7 +1,7 @@
 object Versions{
     const val cealChronicler = "1.0.0"
     object Plugins{
-        const val android = "7.3.1"
+        const val android = "7.2.2"
         const val kotlin = "1.7.10"
     }
     const val sdk = 33

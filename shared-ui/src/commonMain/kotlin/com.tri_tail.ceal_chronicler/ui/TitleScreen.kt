@@ -12,9 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
+import com.tri_tail.ceal_chronicler.MR
 import com.tri_tail.ceal_chronicler.theme.primaryColor
 import com.tri_tail.ceal_chronicler.theme.primaryDarkColor
 import com.tri_tail.ceal_chronicler.theme.typography
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun TitleScreen() {
@@ -37,7 +39,7 @@ fun TitleScreen() {
                 .padding(15.dp)
         ) {
             Text(
-                text = "Welcome to the Ceal Chronicler!",
+                text = stringResource(MR.strings.test_string),
                 style = typography.h1
             )
         }
