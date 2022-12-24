@@ -41,6 +41,7 @@ kotlin {
                 api(compose.materialIconsExtended)
                 api(compose.ui)
                 api(compose.uiTooling)
+                api(compose.preview)
             }
         }
         val commonTest by getting

@@ -22,19 +22,25 @@ val typography = Typography(
 
     h2 = TextStyle(
         fontFamily = FontFamily.Cursive,
-        fontSize = 20.sp,
+        fontSize = 22.sp,
         color = darkTextColor
     ),
 
     h3 = TextStyle(
         fontFamily = FontFamily.Cursive,
-        fontSize = 16.sp,
+        fontSize = 20.sp,
         color = darkTextColor
     ),
 
     h4 = TextStyle(
         fontFamily = FontFamily.Cursive,
-        fontSize = 12.sp,
+        fontSize = 18.sp,
+        color = darkTextColor
+    ),
+
+    body1 = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontSize = 16.sp,
         color = darkTextColor
     )
 )

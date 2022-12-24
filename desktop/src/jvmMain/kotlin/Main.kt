@@ -4,7 +4,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.tri_tail.ceal_chronicler.ui.MainView
+import com.tri_tail.ceal_chronicler.ui.main_view.MainView
 
 fun main() {
     application {
