@@ -347,21 +347,55 @@
 # 24-Dec-2022
 
 * Now continuing with this
+
 * Yesterday I spent all day trying to get an image to work and failed miserably
+
   * The help request I posted about that didn't get an answer yet
+
 * While this is annoying and possibly a killer criterion, I am not going to let it stop me at this point, because there's still a bunch of things that I want to try out in Kotlin Multiplatform
+
 * So I'm going to carry on as best as I can
+
 * Next, I want to implement characters
+
   * Two different approaches come to mind
+
     * I could now try to lay out the entire structure of the app in advance as I see it and implement everything I need step by step, such as a main menu, a character selector and a character view
     * Or, I could just start with the character view and add extra screens as they become necessary
+
   * I think I'm gonna go for the second option, since that reflects how I want to program
+
     * Specifically, I want to see if both I and the framework can make it so that the app is easy to restructure at a later date
     * That is, I will try to design the architecture in such a way that it is easy to put, for example, a character selector and a main menu between the character and the start screen later on, and in doing so I will learn how well the framework supports this approach
+
   * Following that basic idea of adaptable and emergent design, I'll try to implement only the things that are absolutely necessary for each step to work, while trying to keep the design as flexible as possible for later additions
+
   * So, basically, a `Character` class with hard-coded values is all I need for this, which I feel also makes sense for now, because the current challenge is going to get the UI to display a character view. I can worry about how to adjust characters once I got this working
+
   * The first question is how the view switching works
+
     * The tutorial I did earlier did that, so I should be able to copycat it from there
+
+      * I think the gist of that is:
+
+        * ````
+          val selectedIndex = remember { mutableStateOf(0) }
+          [...]
+                      when (selectedIndex.value) {
+                          0 -> TimeZoneScreen(currentTimezoneStrings)
+                           1 -> FindMeetingScreen(currentTimezoneStrings)
+                      }
+          ````
+
+      * I wonder if that will also work with an enum
+
+    * But based on that, I figure what I need to do is make what I have now into something like a `TitleScreen`, and then give that a button that changes the `selectedIndex` (I'll want to give that a better name, like `activeScreen`)
+
+    * Okay, looks like that basically works, and with an Enum too
+
+    * I now successfully extracted the `TitleScreen` and gave the `MainView` an `MainViewState` variable that is remembered and currently causes the title screen to be drawn
+
+    * Next, I want to implement the character screen and see if that is displayed instead if I manually switch the state (and if that works, I'll next try to add a button to switch the state in-app)
 
 
 

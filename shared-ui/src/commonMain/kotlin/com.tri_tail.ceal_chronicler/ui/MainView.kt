@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -18,7 +20,10 @@ import com.tri_tail.ceal_chronicler.theme.*
 
 @Composable
 fun MainView() {
+    val mainViewState = remember { mutableStateOf(MainViewState.TITLE) }
     AppTheme {
-        TitleScreen();
+        when(mainViewState.value){
+            MainViewState.TITLE -> TitleScreen();
+        }
     }
 }
