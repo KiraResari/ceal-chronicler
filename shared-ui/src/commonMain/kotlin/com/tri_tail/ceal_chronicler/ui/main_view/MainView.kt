@@ -9,10 +9,10 @@ import com.tri_tail.ceal_chronicler.ui.character_screen.CharacterScreen
 
 @Composable
 fun MainView() {
-    val mainViewState = remember { mutableStateOf(MainViewState.CHARACTER) }
+    val mainViewState = remember { mutableStateOf(MainViewState.TITLE) }
     AppTheme {
         when(mainViewState.value){
-            MainViewState.TITLE -> TitleScreen()
+            MainViewState.TITLE -> TitleScreen(mainViewState)
             MainViewState.CHARACTER -> CharacterScreen()
         }
     }

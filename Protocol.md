@@ -407,7 +407,13 @@
 
           * https://stackoverflow.com/questions/74908124/kotlin-compose-preview-reference-unresolved
 
-        * Meanwhile, I suppose this means that I can'´t use previews either
+        * Meanwhile, I suppose this means that I can't use previews either
+
+      * Anyway, I now managed to implement the character screen
+
+    * Next, I want to implement a button on the Title Screen that takes me to the Character Screen
+
+      * That might be a bit interesting since that means I somehow have to adjust the `mainViewState` variable on the `MainView` from the `TitleScreen`
 
 
 
@@ -524,4 +530,3 @@
 
 * Make sure the module folder name and the module import statement are the same and have no typos
 
-# 
