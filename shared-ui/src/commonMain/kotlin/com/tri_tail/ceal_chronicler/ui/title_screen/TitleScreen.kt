@@ -50,7 +50,7 @@ fun TitleScreen(mainViewState: MutableState<MainViewState>) {
         Button(
             onClick = { mainViewState.value = MainViewState.CHARACTER }
         ) {
-            Text(text = "Go to Character Screen")
+            Text(text = "Go to Character Selection")
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -54,7 +55,11 @@ fun DisplayCharacterScreen(selectedCharacter: MutableState<Optional<Character>>)
                 style = typography.body1,
                 textAlign = TextAlign.Start
             )
-
+            Button(
+                onClick = { selectedCharacter.value = Optional.empty() }
+            ) {
+                Text(text = "Back to character selection")
+            }
         }
     }
 }
