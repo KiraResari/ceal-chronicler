@@ -199,9 +199,9 @@
         1.  Dependency 'androidx.compose.ui:ui-graphics:1.3.2' requires libraries and applications that
             depend on it to compile against version 33 or later of the
             Android APIs.
-      
+        
             :androidApp is currently compiled against android-32.
-      
+        
             Recommended action: Update this project to use a newer compileSdkVersion
             of at least 33, for example 33.
       ````
@@ -334,6 +334,35 @@
 
   * Okay, so after way more trouble than anticipated (again), I have now finished this, and everything seems to work alright again
 
+* That means that now I'm back with the image problem again
+
+  * ...I am not going to work on that again today
+  * Instead, I now posted a help request about this here:
+    * https://stackoverflow.com/questions/74902818/kotlin-multiplatform-add-images-on-android-and-desktop
+
+* This is as far as I'm getting with this today
+
+
+
+# 24-Dec-2022
+
+* Now continuing with this
+* Yesterday I spent all day trying to get an image to work and failed miserably
+  * The help request I posted about that didn't get an answer yet
+* While this is annoying and possibly a killer criterion, I am not going to let it stop me at this point, because there's still a bunch of things that I want to try out in Kotlin Multiplatform
+* So I'm going to carry on as best as I can
+* Next, I want to implement characters
+  * Two different approaches come to mind
+    * I could now try to lay out the entire structure of the app in advance as I see it and implement everything I need step by step, such as a main menu, a character selector and a character view
+    * Or, I could just start with the character view and add extra screens as they become necessary
+  * I think I'm gonna go for the second option, since that reflects how I want to program
+    * Specifically, I want to see if both I and the framework can make it so that the app is easy to restructure at a later date
+    * That is, I will try to design the architecture in such a way that it is easy to put, for example, a character selector and a main menu between the character and the start screen later on, and in doing so I will learn how well the framework supports this approach
+  * Following that basic idea of adaptable and emergent design, I'll try to implement only the things that are absolutely necessary for each step to work, while trying to keep the design as flexible as possible for later additions
+  * So, basically, a `Character` class with hard-coded values is all I need for this, which I feel also makes sense for now, because the current challenge is going to get the UI to display a character view. I can worry about how to adjust characters once I got this working
+  * The first question is how the view switching works
+    * The tutorial I did earlier did that, so I should be able to copycat it from there
+
 
 
 # ⚓
@@ -363,6 +392,55 @@
 * Multiplatform support for resources is not natively implemented
 
 
+
+# Benchmarks
+
+## IDE
+
+* Overall: Good (++)
+* (+) The IDE is Android Studio, and it works well
+* (+) Refactoring, code navigation and syntax highlighting all work without problems
+  * Refactoring hasn't been thoroughly tested yet though
+
+## Project setup
+
+* Overall: Bad (--)
+* (-) A Kotlin Multiplatform Mobile project is set up easily via wizard, but a true multiplatform project that also supports desktop needs to be done manually
+* (-) At the end, you end up with a Moloch with six modules and just as many `build.gradle.kts` files, which are already full of dependencies
+  * Put simply: You *start* already with dependency hell
+
+## Multiplatform support
+
+* Overall: Kinda bad (-)
+* It fells like it's half-baked yet
+* (-) Android and Desktop can share the same frontend code, but for iOS you need to program in Swift
+  * (-) And even in the Android and Desktop shared frontend code, there are some problems, such as shared resources not really working
+* (+) Backend code can be shared across all projects
+
+## Dependency Injection
+
+* Not tested yet
+
+## Persistence
+
+* Not tested yet
+
+## Testing
+
+* Not tested yet
+
+## Project load times
+
+* Overall: Very Bad (---)
+* (-) When setting up a project or loading a project for the first time, it takes 10+ minutes for the initial gradle build
+* (-) When loading a project after starting the IDE, it still takes about 2 minutes to get ready
+* (-) Further minute-long load times whenever any build.gradle is adjusted
+
+## File Size
+
+* Overall: Very Bad (---)
+* (---) even a very basic program with no media is already 129MB big, which is roughly three orders of magnitude above what I'd expect
+  * For contrast, that's over twice as big as the maximum size that Nintendo 64 games could be 
 
 # Knowledgebase
 

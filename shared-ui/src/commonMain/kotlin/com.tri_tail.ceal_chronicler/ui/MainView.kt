@@ -19,29 +19,6 @@ import com.tri_tail.ceal_chronicler.theme.*
 @Composable
 fun MainView() {
     AppTheme {
-        Card(
-            elevation = 10.dp,
-            modifier = Modifier.wrapContentSize()
-        ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                primaryColor,
-                                primaryDarkColor,
-                            )
-                        )
-                    )
-                    .padding(15.dp)
-            ) {
-                Text(
-                    text = "Welcome to the Ceal Chronicler!",
-                    style = typography.h1
-                )
-            }
-        }
+        TitleScreen();
     }
 }
