@@ -1,4 +1,4 @@
-package com.tri_tail.ceal_chronicler.ui
+package com.tri_tail.ceal_chronicler.ui.character_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.tri_tail.ceal_chronicler.characters.Character
 import com.tri_tail.ceal_chronicler.MR
 import com.tri_tail.ceal_chronicler.theme.primaryColor
 import com.tri_tail.ceal_chronicler.theme.primaryDarkColor
@@ -19,14 +21,15 @@ import com.tri_tail.ceal_chronicler.theme.typography
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun TitleScreen() {
+fun CharacterScreen() {
+    var character = Character();
     Card(
         elevation = 10.dp,
-        modifier = Modifier.wrapContentSize()
+        modifier = Modifier.padding(15.dp)
     ) {
         Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .background(
                     brush = Brush.horizontalGradient(
@@ -39,9 +42,20 @@ fun TitleScreen() {
                 .padding(15.dp)
         ) {
             Text(
-                text = stringResource(MR.strings.test_string),
+                text = character.name,
                 style = typography.h1
             )
+            Text(
+                text = "Species: " + character.species,
+                style = typography.body1,
+                textAlign = TextAlign.Start
+            )
+            Text(
+                text = "Weapon: " + character.weapon,
+                style = typography.body1,
+                textAlign = TextAlign.Start
+            )
+
         }
     }
 }

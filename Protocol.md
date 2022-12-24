@@ -397,6 +397,24 @@
 
     * Next, I want to implement the character screen and see if that is displayed instead if I manually switch the state (and if that works, I'll next try to add a button to switch the state in-app)
 
+      * While trying to do that, I wanted to try out the Preview feature of Compose, but for some reason, even though I added the dependency for the Preview feature, it doesn't recognize it
+
+        * ````
+          e: E:\projects\ceal-chronicler\shared-ui\src\commonMain\kotlin\com\tri_tail\ceal_chronicler\ui\character_screen\CharacterScreen.kt: (15, 36): Unresolved reference: preview
+          ````
+
+        * I now created this help request for that:
+
+          * https://stackoverflow.com/questions/74908124/kotlin-compose-preview-reference-unresolved
+
+        * Meanwhile, I suppose this means that I can't use previews either
+
+      * Anyway, I now managed to implement the character screen
+
+    * Next, I want to implement a button on the Title Screen that takes me to the Character Screen
+
+      * That might be a bit interesting since that means I somehow have to adjust the `mainViewState` variable on the `MainView` from the `TitleScreen`
+
 
 
 # ⚓
@@ -425,9 +443,21 @@
 
 * Multiplatform support for resources is not natively implemented
 
+## Notable things that don't work
+
+* Images
+* Previews
+
 
 
 # Benchmarks
+
+## Language
+
+* Overall: Kinda Good (+)
+* Kotlin
+* (+) Data classes
+* (+) Enforces when-statements (switch/case) to be exhaustive
 
 ## IDE
 
@@ -438,10 +468,11 @@
 
 ## Project setup
 
-* Overall: Bad (--)
+* Overall: Very bad (---)
 * (-) A Kotlin Multiplatform Mobile project is set up easily via wizard, but a true multiplatform project that also supports desktop needs to be done manually
 * (-) At the end, you end up with a Moloch with six modules and just as many `build.gradle.kts` files, which are already full of dependencies
   * Put simply: You *start* already with dependency hell
+  * (-) And sometimes references fail to resolve for no apparent reason
 
 ## Multiplatform support
 
@@ -499,4 +530,3 @@
 
 * Make sure the module folder name and the module import statement are the same and have no typos
 
-# 
