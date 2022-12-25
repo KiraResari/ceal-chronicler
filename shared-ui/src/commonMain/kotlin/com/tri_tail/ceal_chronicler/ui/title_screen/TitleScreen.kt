@@ -1,5 +1,6 @@
 package com.tri_tail.ceal_chronicler.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,10 @@ fun TitleScreen(mainViewState: MutableState<MainViewState>) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Image(
+            painter = getCealChroniclerLogo(),
+            contentDescription = "Ceal Chronicler Logo"
+        )
         Card(
             elevation = 10.dp,
             modifier = Modifier.wrapContentSize()

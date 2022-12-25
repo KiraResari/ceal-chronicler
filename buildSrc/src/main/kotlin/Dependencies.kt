@@ -17,7 +17,7 @@ object Namespaces{
 }
 
 object Dependencies{
-    const val activityCompose = "androidx.activity:activity-compose:"
+    const val activityCompose = "androidx.activity:activity-compose:${Versions.activityCompose}"
     const val androidGradlePlugin = "com.android.tools.build:gradle:${Versions.Plugins.android}"
     const val kotlinGradlePlugin= "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.Plugins.kotlin}"
     object Compose{
