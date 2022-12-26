@@ -36,6 +36,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":shared"))
+                implementation("org.greenrobot:eventbus:3.3.1")
 
                 api(compose.foundation)
                 api(compose.runtime)

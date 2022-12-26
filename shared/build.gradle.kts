@@ -6,12 +6,12 @@ plugins {
 kotlin {
     android()
 
-    jvm("desktop"){
+    jvm("desktop") {
         compilations.all {
             kotlinOptions.jvmTarget = "11"
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -24,6 +24,9 @@ kotlin {
 
     sourceSets {
         val commonMain by getting
+            dependencies {
+                implementation("org.greenrobot:eventbus:3.3.1")
+            }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))

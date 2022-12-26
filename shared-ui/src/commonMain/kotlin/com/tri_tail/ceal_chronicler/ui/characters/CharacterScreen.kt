@@ -22,7 +22,6 @@ import com.tri_tail.ceal_chronicler.theme.primaryColor
 import com.tri_tail.ceal_chronicler.theme.primaryDarkColor
 import com.tri_tail.ceal_chronicler.theme.typography
 import java.util.*
-import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun DisplayCharacterScreen(selectedCharacter: MutableState<Optional<Character>>) {

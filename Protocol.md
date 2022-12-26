@@ -568,6 +568,194 @@
               * I suppose that makes sense, though, since the `ViewController` is effectively in charge of the view, and nothing else
               * I'll have to keep that in mind for sequencing though, since that means that the `ViewController` should not be allowed to update the models (again, this makes perfect sense, now that I think about it, and I actually like it how the structure that is starting to emerge here lets me see such things)
                 * That means that one possible sequencing for, say, updating a character might be like `UpdateCharacterEvent` > `CharacterModel.UpdateCharacter` > `UpdateCharacterViewEvent` > `ViewController.UpdateView`
+  
+* Okay, so now that I have the basic groundwork in place, and a better idea of what I'm doing, let's proceed with he events
+
+  * Currently, I think I need two events: `OpenCharacterSelectionViewEvent` and `OpenCharacterViewEvent`, both of which can inherit from a superclass `OpenViewEvent`
+
+  * I think it's gonna be best if those are in the `shared` module, since classes from both `shared` and `shared-ui` will have to respond to them, and I think I already established that the `shared-ui` module depends on the `shared` module
+
+  * But before I can actually do that, I think I need to read up on Events in Kotlin
+
+    * Uhh, I am a bit taken aback by the fact that this is apparently not as straightforward as I would have assumed
+
+      * Maybe this will provide me with more insight?
+
+        * https://dev.to/mohitrajput987/event-bus-pattern-in-android-using-kotlin-flows-la
+
+        * Wow, talk about recent! That article was literally published yesterday!
+
+        * However, I am having trouble implementing it
+
+          * For one, the project can't find `MutableSharedFlow`
+
+          * I tried adding `implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")` to the dependencies of the `shared` module
+
+            * However, while that does run through the gradle sync, it does not solve the problem
+
+            * Specifically, the import `import kotlinx.coroutines.flow` does not work afterwards (specifically, the `flow` part seems to be the problem)
+
+            * That is so weird since the documentation says that it is part of `kotlinx-coroutines-core/kotlinx.coroutines.flow/MutableSharedFlow`
+
+            * Maybe I'm using the dependencies wrong...
+
+            * The `build.gradle.kts` for the `shared` module is looking kinda funky anyways:
+
+              * ``````kotlin
+                plugins {
+                    kotlin(Dependencies.Plugins.kotlinMultiplatform)
+                    id(Dependencies.Plugins.androidLibrary)
+                }
+                
+                kotlin {
+                    android()
+                
+                    jvm("desktop"){
+                        compilations.all {
+                            kotlinOptions.jvmTarget = "11"
+                        }
+                    }
+                    
+                    listOf(
+                        iosX64(),
+                        iosArm64(),
+                        iosSimulatorArm64()
+                    ).forEach {
+                        it.binaries.framework {
+                            baseName = "shared"
+                        }
+                    }
+                
+                    sourceSets {
+                        val commonMain by getting
+                        val commonTest by getting {
+                            dependencies {
+                                implementation(kotlin("test"))
+                            }
+                        }
+                        val androidMain by getting
+                        val androidTest by getting
+                        val iosX64Main by getting
+                        val iosArm64Main by getting
+                        val iosSimulatorArm64Main by getting
+                        val iosMain by creating {
+                            dependsOn(commonMain)
+                            iosX64Main.dependsOn(this)
+                            iosArm64Main.dependsOn(this)
+                            iosSimulatorArm64Main.dependsOn(this)
+                        }
+                        val iosX64Test by getting
+                        val iosArm64Test by getting
+                        val iosSimulatorArm64Test by getting
+                        val iosTest by creating {
+                            dependsOn(commonTest)
+                            iosX64Test.dependsOn(this)
+                            iosArm64Test.dependsOn(this)
+                            iosSimulatorArm64Test.dependsOn(this)
+                        }
+                    }
+                }
+                
+                android {
+                    namespace = "com.tri_tail.ceal_chronicler"
+                    compileSdk = 32
+                    defaultConfig {
+                        minSdk = 21
+                        targetSdk = 32
+                    }
+                }
+                ``````
+
+              * It doesn't even have a `dependencies` block to begin with (though I can add one without any problems)
+
+              * The sample project seems to handle dependencies like this:
+
+                * ````kotlin
+                  kotlin {
+                      [...]
+                      sourceSets {
+                          val commonMain by getting {
+                              dependencies {
+                                  implementation(Deps.JetBrains.datetime)
+                  
+                                  implementation(Deps.napier)
+                              }
+                          }
+                          val commonTest by getting {
+                              dependencies {
+                                  implementation(kotlin("test-common"))
+                                  implementation(kotlin("test-annotations-common"))
+                              }
+                          }
+                          val androidMain by getting
+                          val androidTest by getting {
+                              dependencies {
+                                  implementation(kotlin("test-junit"))
+                                  implementation("junit:junit:4.13.2")
+                              }
+                          }
+                  
+                          // Set up dependencies between the source sets
+                          val iosMain by getting {
+                              dependsOn(commonMain)
+                          }
+                          val iosTest by getting
+                          val iosSimulatorArm64Main by getting
+                          val iosSimulatorArm64Test by getting
+                          iosSimulatorArm64Main.dependsOn(iosMain)
+                          iosSimulatorArm64Test.dependsOn(iosTest)
+                      }
+                  }
+                  ````
+
+              * That's kinda funky, but let's try if I can get it to work like that
+
+              * Yes, looks like doing it like this works:
+
+                * ````kotlin
+                  kotlin {
+                      [...]
+                      sourceSets {
+                          val commonMain by getting {
+                              dependencies {
+                                  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                              }
+                          }
+                          [...]
+                      }
+                  }
+                  ````
+
+              * However, after trying to implement it, I eventually arrived at this error:
+
+                * ````
+                  Suspend function 'publish' should be called only from a coroutine or another suspend function
+                  ````
+
+                * Well, that sucks
+
+                * I am not deep enough into what that means to really be sure, but my guess it that this will prevent me from firing events from the frontend, which is something that I need to do
+
+                * So I don't think this will work after all
+
+  * Maybe this will work instead?
+
+    * https://github.com/DevSrSouza/EventKt
+    * Hmm, no, that has not been maintained for over 2 years, and is only downloadable via an insecure protocol
+
+  * Maybe this?
+
+    * https://github.com/greenrobot/EventBus
+    * Yes! This! This is what an event system should be looking like!
+    * Now let's see if I can integrate it into my project
+    * My main concern is that this is Java, but I do recall reading that all valid Java is valid Kotlin or something
+    * Mmmh, doesn't look like it's working yet, however...
+    * I got it to start up without errors, but now nothing happens when I click on the `To Character Selection Screen`-button
+    * Debugging has shown that the `ViewController` registers itself in the `EventBus` with ID 2526, and the event also gets posted to that same `EventBus` instance, which I can see has the `ViewController` as one of its subscribers
+    * And I see that the `mainViewState` variable also gets updated, but the `draw` method is not being called again
+    * And I can't just re-call `draw` here because the observing method is not `@Composable`
+    * Maybe I need to do it with one of those weird `MutableState` objects after all?
+
 
 
 
@@ -612,14 +800,16 @@
 * Kotlin
 * (+) Data classes
 * (+) Enforces when-statements (switch/case) to be exhaustive
+* (-) Events are not as straightforward as they should be
 
 ## IDE
 
-* Overall: Kinda Good (+)
+* Overall: Neutral (0)
 * (+) The IDE is Android Studio, and it works well
 * (+) Refactoring, code navigation and syntax highlighting all work without problems
   * Refactoring hasn't been thoroughly tested yet though
 * (-) Auto import is unreliable, sometimes offers only garbage, and overall I end up having to manually write/copy imports a lot
+* (-) Syntax highlighting takes several seconds to update on a change, and so does auto-complete
 
 ## Project setup
 

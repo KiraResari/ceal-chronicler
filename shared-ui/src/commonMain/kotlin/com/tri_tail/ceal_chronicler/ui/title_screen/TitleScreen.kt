@@ -16,15 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.tri_tail.ceal_chronicler.MR
+import com.tri_tail.ceal_chronicler.events.OpenCharacterSelectionViewEvent
 import com.tri_tail.ceal_chronicler.painterResource
 import com.tri_tail.ceal_chronicler.theme.primaryColor
 import com.tri_tail.ceal_chronicler.theme.primaryDarkColor
 import com.tri_tail.ceal_chronicler.theme.typography
 import com.tri_tail.ceal_chronicler.ui.main_view.MainViewState
 import dev.icerock.moko.resources.compose.stringResource
+import org.greenrobot.eventbus.EventBus
 
 @Composable
-fun TitleScreen(mainViewState: MutableState<MainViewState>) {
+fun TitleScreen() {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -58,9 +60,16 @@ fun TitleScreen(mainViewState: MutableState<MainViewState>) {
             }
         }
         Button(
-            onClick = { mainViewState.value = MainViewState.CHARACTER }
+            onClick = {
+                clickButton()
+            }
         ) {
             Text(text = "Go to Character Selection")
         }
     }
+}
+
+private fun clickButton() {
+    val eventBus = EventBus.getDefault()
+    eventBus.post(OpenCharacterSelectionViewEvent())
 }
