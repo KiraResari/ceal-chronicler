@@ -484,6 +484,92 @@
 
 
 
+# 26-Dec-2022
+
+* Now continuing with this
+
+* There was some feedback on the Image situation, so I will try to address that first
+
+  * Oh my, looks like it works now! Awesome!
+  * Now I'll just have to see what changed, and possibly write it down 
+
+* I'll now do some cleanup in the wake of the merged PR that got the images to work
+
+  * For one, they hard-coded the versions into the `build.gradle.kts` file, and I want to keep them consistently within my chosen approach of having all those things stored in the `Dependencies.kt`
+
+  * I also want to try out if it works with the latest version of the Android Gradle Plugin
+
+    * Looks like it doesn't
+
+    * On Desktop it works, but on Android, it throws this error in one of its generated files
+
+      * ````
+        e: E:\projects\ceal-chronicler\shared-ui\build\generated\moko\androidMain\src\com\tri_tail\ceal_chronicler\MR.kt: (16, 70): Unresolved reference: string
+        ````
+
+    * Oh well, I suppose the old android version will do
+
+  * Finally, there's that issue of the moko `stringResource` not being recognized in the IDE, which displays me this error:
+
+    * ````
+      Unresolved reference: stringResource
+      ````
+
+    * I now tried adding `implementation(Dependencies.Moko.resourcesCompose)` to the Dependencies of `shared-ui`
+
+      * But that didn't change anything
+
+    * I also tried `implementation(Dependencies.Moko.resources)`
+
+      * But that didn't do anything either
+
+    * So, how come this works when I compile it?
+
+    * Do we even need it?
+
+      * Yes we do, because otherwise the project complains that I am handing it a `StringResource` where it needs a `String` (which is kinda confusing, since I just removed the `stringResource(...)`), but okay
+      * But maybe it works if I simply affix `toString()` instead?
+      * Mmmh, no, while this is syntactically correct, it does produce a String-representation of the `StringResource` instance instead of giving me its value there 
+
+    * Okay, so I now posted a help request here, and will now move on to something else:
+
+      * https://github.com/icerockdev/moko-resources/issues/401
+
+* Now to the actual thing that I wanted to do today
+
+* I have been noticing that the convenience of the project is starting to derail
+
+  * I've got a multi-layered frontend where frontend functions are passing on their state variables to the functions they call so that these functions can modify the  state of the previous functions
+  * That seems like a recipe for disaster, and I can see it growing more unstable and unmaintainable as the project grows in complexity  
+  * I do not want to indulge in that
+  * So, I need to come up with a better project structure
+  * Ideally, I want the backend to tell the frontend what to it should draw on the screen, and the frontend do nothing more than draw and throw events which are listened to by the backend
+    * So basically, I want the frontend to be truly stateless, and not feature _any_ `remember` variables (except maybe for input fields where the entered values are sent via event as soon as some sort of submit button is clicked)
+    * Is that feasibly possible?
+    * To answer that, I think I need to better understand the project structure, because thus far I've largely been copycatting, and am still working on getting a profound understanding of what all this adjusted sample code is actually doing
+      * Thus far, I've regarded the `MainView.kt` as the entry point of the program, but that's not actually true, is it?
+        * No, the actual entry points are `com.tri_tail.ceal_chronicler.android.MainActivity` for Android and the `main()` function from `src/jvmMain/kotlin/Main.kt`
+        * That is moderately good
+        * The solution for Android is actually what I'd prefer, and what I would have known how to work from
+        * However, the Desktop solution is kinda bogus, and I don't know what to do with that
+        * Since this is also sorta related to dependency injection, let me have a look at the files from the Dependency Injection tutorial
+          * The Tutorial itself is behind a paywall, but fortunately, the sample files themselves are perfectly useable
+            * https://github.com/kodecocodes/kmpf-materials/
+          * And fortunately, since the repository features both a "start" and a "final" version for each chapter, it is also easy to see what changed by copying the contents of "final" over "start", and then using git to view the differences
+          * Okay, so...
+          * ...I am not entirely in the clear about what is happening there, but the basic structure of the Desktop app being basically a function call while the Android App is in a class doesn't seem to change
+          * Also, in place of Spring (as I would have expected), somethin called "Koin" seems to be used for dependency injection there
+          * Also, the IDE does not seem to be comfortable with that, which may or may not be related on a missing plugin
+          * Anyway, I don't want to do Dependency Injection just yet, so let's leave that for later
+          * Meanwhile, thinking about that I did get some ideas for how this might work, _assuming_ that the application does work how I think it does
+          * While I still don't quite understand where the main loop happens on Desktop, it _should_ work if I simply wrap the call to `MainView` in a common class which both the Android an Desktop apps instantiate
+          * If that works, I can make that class into an Event Listener then, and change it to draw the appropriate view  
+            * Looks like that works, although I do have to note that I had to put the `ViewController` into `shared-ui` to make it work because otherwise it  could not access the `MainView`
+              * I suppose that makes sense, though, since the `ViewController` is effectively in charge of the view, and nothing else
+              * I'll have to keep that in mind for sequencing though, since that means that the `ViewController` should not be allowed to update the models (again, this makes perfect sense, now that I think about it, and I actually like it how the structure that is starting to emerge here lets me see such things)
+                * That means that one possible sequencing for, say, updating a character might be like `UpdateCharacterEvent` > `CharacterModel.UpdateCharacter` > `UpdateCharacterViewEvent` > `ViewController.UpdateView`
+
+
 
 # ⚓
 
@@ -548,7 +634,7 @@
 * Overall: Kinda bad (-)
 * It fells like it's half-baked yet
 * (-) Android and Desktop can share the same frontend code, but for iOS you need to program in Swift
-  * (-) And even in the Android and Desktop shared frontend code, there are some problems, such as shared resources not really working
+  * (-) Sharing resources like XMLs and images, while possible, is complicated and requires third-party extensions
 * (+) Backend code can be shared across all projects
 
 ## Dependency Injection
@@ -577,6 +663,104 @@
   * For contrast, that's over twice as big as the maximum size that Nintendo 64 games could be 
 
 # Knowledgebase
+
+## How Tos
+
+### Cross-Platform Images
+
+* You need the dependency `moko-resources` for that (https://github.com/icerockdev/moko-resources)
+
+  * Note that it might not work with the latest version of the android plugin
+    * In my case, I needed to set the version of the android plugin to `7.2.2`
+
+* Apart from the android plugin version, all the changes need to happen in the `shared-ui` module
+
+* In the `shared-ui/build.gradle.kts` add:
+
+  * ````kotlin
+    kotlin {
+        [...]
+        sourceSets {
+            val commonMain by getting {
+                dependencies {
+                    [...]
+                    api("dev.icerock.moko:resources:0.20.1")
+                    api("dev.icerock.moko:resources-compose:0.20.1")
+                }
+            }
+            [...]
+        }
+    }
+    ````
+
+* Add the following files:
+
+  *  `shared-ui/src/commonMain/kotlin/com/domain/project/ResourcesExt.kt`
+
+  * ````kotlin
+    package com.domain.project
+    
+    import androidx.compose.ui.graphics.painter.Painter
+    import dev.icerock.moko.resources.ImageResource
+    
+    expect fun painterResource(imageResource: ImageResource): Painter
+    ````
+
+  * `shared-ui/src/androidMain/kotlin/com/domain/project/ResourcesExt.kt`
+
+  * ````kotlin
+    package com.domain.project
+    
+    import androidx.compose.runtime.Composable
+    import androidx.compose.ui.graphics.painter.Painter
+    import dev.icerock.moko.resources.ImageResource
+    
+    @Composable
+    actual fun painterResource(imageResource: ImageResource): Painter {
+        return androidx.compose.ui.res.painterResource(id = imageResource.drawableResId)
+    }
+    ````
+
+  * `shared-ui/src/desktopMain/kotlin/com/domain/project/ResourcesExt.kt`
+
+  * ````kotlin
+    package com.domain.project
+    
+    import androidx.compose.runtime.Composable
+    import androidx.compose.ui.graphics.painter.Painter
+    import androidx.compose.ui.graphics.toPainter
+    import dev.icerock.moko.resources.ImageResource
+    
+    @Composable
+    actual fun painterResource(imageResource: ImageResource): Painter {
+        return imageResource.image.toPainter()
+    }
+    ````
+
+* The image needs to go under `shared-ui/src/commonMain/resources/MR/images/MyImage@1x.png`
+
+  * I'm not sure what the `@1x` is there for, but it is definitely required, because otherwise there'll be an error when starting the app
+
+* In the composable method where you want to add the image, add:
+
+  * ...these dependencies:
+
+    * ````kotlin
+      import androidx.compose.foundation.Image
+      import com.domain.project.MR
+      import com.domain.project.painterResource
+      ````
+
+  * ...this where you want to display the image:
+
+    * ````kotlin
+              Image(
+                  painter = painterResource(MR.images.MyImage),
+                  contentDescription = "Some Description"
+              )
+      ````
+
+
 
 ## Bugfixes
 
