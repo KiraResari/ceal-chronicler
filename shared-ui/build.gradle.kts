@@ -20,6 +20,7 @@ android {
 }
 dependencies {
     implementation(Dependencies.Compose.uiGraphics)
+    implementation(Dependencies.Compose.material)
 }
 
 kotlin {

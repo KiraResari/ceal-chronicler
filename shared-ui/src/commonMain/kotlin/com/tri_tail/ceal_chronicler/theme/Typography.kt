@@ -21,21 +21,33 @@ val typography = Typography(
     ),
 
     h2 = TextStyle(
-        fontFamily = FontFamily.Cursive,
+        fontFamily = FontFamily.SansSerif,
         fontSize = 22.sp,
-        color = darkTextColor
+        color = darkTextColor,
+        shadow = Shadow(
+            color = brightTextColor,
+            offset = Offset(1.0f, 1.0f)
+        )
     ),
 
     h3 = TextStyle(
-        fontFamily = FontFamily.Cursive,
+        fontFamily = FontFamily.SansSerif,
         fontSize = 20.sp,
-        color = darkTextColor
+        color = darkTextColor,
+        shadow = Shadow(
+            color = brightTextColor,
+            offset = Offset(1.0f, 1.0f)
+        )
     ),
 
     h4 = TextStyle(
-        fontFamily = FontFamily.Cursive,
+        fontFamily = FontFamily.SansSerif,
         fontSize = 18.sp,
-        color = darkTextColor
+        color = darkTextColor,
+        shadow = Shadow(
+            color = brightTextColor,
+            offset = Offset(1.0f, 1.0f)
+        )
     ),
 
     body1 = TextStyle(

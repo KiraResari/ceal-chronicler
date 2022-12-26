@@ -415,6 +415,74 @@
 
       * That might be a bit interesting since that means I somehow have to adjust the `mainViewState` variable on the `MainView` from the `TitleScreen`
 
+        * Yeeees, this turn out to be a problem
+
+        * I've tried out a number of things, such as passing `mainViewState` or `mainView.State.value` into the `TitleScreen` function, and they all give me this error:
+
+          * ````
+            Val cannot be reassigned
+            ````
+
+        * Ah, I think like this it works:
+
+          * ````
+            @Composable
+            fun MainView() {
+                val mainViewState = remember { mutableStateOf(MainViewState.CHARACTER) }
+                AppTheme {
+                    when(mainViewState.value){
+                        MainViewState.TITLE -> TitleScreen(mainViewState)
+                        MainViewState.CHARACTER -> CharacterScreen()
+                    }
+                }
+            }
+            
+            @Composable
+            fun TitleScreen(mainViewState: MutableState<MainViewState>) {
+                [...]
+                        Button(onClick = {
+                            mainViewState.value = MainViewState.CHARACTER
+                        }) {
+                            Text(text = "Go to Character Screen")
+                        }
+                    }
+                }
+            }
+            ````
+
+        * Yes it does! Yes it does! Yes it does! =^,^=
+
+* Meanwhile, one of the help requists regarding the pictures has triggered, and the person even made a PR for that, so let's see
+
+  * Regardless of whether it will ultimately work or not, it's in no way simple or straightforward, since the PR only included a sample for a string resource and not an image, and I had to resolve conflicts
+  * But the string resource seems to work, that's at least one good thing
+  * Anyway, I made a non-working version of how I imagine it should work, and ponged it back to him on that branch
+  * Meanwhile, I will continue with non-image stuff
+
+* The next thing I want to implement is multiple characters, and a way to select them
+
+  * This requires at least two things:
+    * Some sort of `CharacterRepository` where all the characters are stored
+    * A `CharacterSelectionScreen` or something
+
+  * I now managed to do that
+
+* With that, I feel like the program is at this point sufficiently complex that it makes sense to address Dependency Injection and Persistence next
+
+* I'd also like to note that I don't feel entirely happy with the structure that I feel Compose dictates
+
+  * Currently, the structure is very hierarchical: A main view that contains a title screen and character selector, which in turn contains characters, and I always have to pass on the "control variables" if I want to be able to control things from the next layer
+  * What I'd like, envisioned very roughly, would be to have each view or screen in a class, and those be able to fire events like `OpenCharacterScreen(id)` or `OpenMainMenu()` that would cause that view to pop up
+  * Basically, I think what I want is the theoretical option to go from every view in my app to every other view while retaining the overall state
+  * I wonder if that's possible, or rather, if it's possible without disproportionally large effort
+
+* Anyway, I won't be doing any big things in what's left of today, but I still have some time, so I figure I might as well use that to beautify the app a bit 
+
+  * I now did that
+
+* And this is as far as I'm getting with this today
+
+
 
 
 # ⚓
@@ -461,10 +529,11 @@
 
 ## IDE
 
-* Overall: Good (++)
+* Overall: Kinda Good (+)
 * (+) The IDE is Android Studio, and it works well
 * (+) Refactoring, code navigation and syntax highlighting all work without problems
   * Refactoring hasn't been thoroughly tested yet though
+* (-) Auto import is unreliable, sometimes offers only garbage, and overall I end up having to manually write/copy imports a lot
 
 ## Project setup
 

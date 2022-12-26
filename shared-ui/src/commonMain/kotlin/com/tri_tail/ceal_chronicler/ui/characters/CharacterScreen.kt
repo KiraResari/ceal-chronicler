@@ -1,16 +1,19 @@
-package com.tri_tail.ceal_chronicler.ui.character_screen
+package com.tri_tail.ceal_chronicler.ui.characters
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.tri_tail.ceal_chronicler.characters.Character
@@ -18,11 +21,12 @@ import com.tri_tail.ceal_chronicler.MR
 import com.tri_tail.ceal_chronicler.theme.primaryColor
 import com.tri_tail.ceal_chronicler.theme.primaryDarkColor
 import com.tri_tail.ceal_chronicler.theme.typography
+import java.util.*
 import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
-fun CharacterScreen() {
-    var character = Character();
+fun DisplayCharacterScreen(selectedCharacter: MutableState<Optional<Character>>) {
+    val character = selectedCharacter.value.get();
     Card(
         elevation = 10.dp,
         modifier = Modifier.padding(15.dp)
@@ -55,7 +59,12 @@ fun CharacterScreen() {
                 style = typography.body1,
                 textAlign = TextAlign.Start
             )
-
+            Button(
+                onClick = { selectedCharacter.value = Optional.empty() },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+            ) {
+                Text(text = "↩ Back")
+            }
         }
     }
 }
