@@ -2,7 +2,8 @@ plugins {
     kotlin(Dependencies.Plugins.kotlinMultiplatform)
     id(Dependencies.Plugins.androidLibrary)
     id(Dependencies.Plugins.compose).version(Versions.compose)
-    id("dev.icerock.mobile.multiplatform-resources").version("0.20.1")
+    id(Dependencies.Plugins.icerockMultiplatformResources)
+        .version(Versions.icerockResources)
 }
 
 android {
@@ -44,8 +45,8 @@ kotlin {
                 api(compose.ui)
                 api(compose.uiTooling)
 
-                api("dev.icerock.moko:resources:0.20.1")
-                api("dev.icerock.moko:resources-compose:0.20.1")
+                api(Dependencies.Moko.resources)
+                api(Dependencies.Moko.resourcesCompose)
             }
         }
         val commonTest by getting
@@ -60,5 +61,5 @@ kotlin {
 }
 
 multiplatformResources {
-    multiplatformResourcesPackage = "com.tri_tail.ceal_chronicler"
+    multiplatformResourcesPackage = Namespaces.cealChronicler
 }

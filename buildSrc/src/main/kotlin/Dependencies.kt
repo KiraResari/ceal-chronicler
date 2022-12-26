@@ -9,6 +9,7 @@ object Versions{
     const val androidCompose = "1.3.1"
     const val activityCompose = "1.5.1"
     const val jvm = "11"
+    const val icerockResources = "0.20.1"
 }
 
 object Namespaces{
@@ -41,5 +42,10 @@ object Dependencies{
         const val androidLibrary = "com.android.library"
         const val androidApplication = "com.android.application"
         const val compose = "org.jetbrains.compose"
+        const val icerockMultiplatformResources = "dev.icerock.mobile.multiplatform-resources"
+    }
+    object Moko{
+        const val resources = "dev.icerock.moko:resources:${Versions.icerockResources}"
+        const val resourcesCompose = "dev.icerock.moko:resources-compose:${Versions.icerockResources}"
     }
 }
