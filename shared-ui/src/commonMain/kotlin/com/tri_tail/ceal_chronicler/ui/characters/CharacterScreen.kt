@@ -17,10 +17,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.tri_tail.ceal_chronicler.characters.Character
+import com.tri_tail.ceal_chronicler.MR
 import com.tri_tail.ceal_chronicler.theme.primaryColor
 import com.tri_tail.ceal_chronicler.theme.primaryDarkColor
 import com.tri_tail.ceal_chronicler.theme.typography
 import java.util.*
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun DisplayCharacterScreen(selectedCharacter: MutableState<Optional<Character>>) {
