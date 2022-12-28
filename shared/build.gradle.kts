@@ -1,7 +1,6 @@
 plugins {
     kotlin(Dependencies.Plugins.kotlinMultiplatform)
     id(Dependencies.Plugins.androidLibrary)
-    kotlin("kapt")
 }
 
 kotlin {
@@ -26,13 +25,7 @@ kotlin {
     sourceSets {
         val commonMain by getting
             dependencies {
-                implementation(Dependencies.eventBus)
-                implementation(Dependencies.Hilt.android)
-                "kapt"(Dependencies.Hilt.compiler)
-                implementation(Dependencies.Hilt.compose)
-                implementation(Dependencies.Lifecycle.runtime)
-                implementation(Dependencies.Lifecycle.compose)
-                implementation(Dependencies.Hilt.androidGradlePlugin)
+                implementation("org.greenrobot:eventbus:3.3.1")
             }
         val commonTest by getting {
             dependencies {
@@ -60,10 +53,6 @@ kotlin {
             iosSimulatorArm64Test.dependsOn(this)
         }
     }
-}
-
-kapt {
-    correctErrorTypes = true
 }
 
 android {

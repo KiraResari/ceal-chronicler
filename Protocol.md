@@ -911,6 +911,18 @@
 
         * As a quick action, on the unrecognized `@HiltViewModel` AndroidStudio suggests `Add Library "Gradle: com.google.dagger.hilt-android:2:38:1@aar" to classpath`, but when I try to do that, nothing happens
 
+        * Also, I checked, and that is the dependency that I just imported earlier
+
+        * °sigh°
+
+        * Mmmh, I think the problem is that Hilt really is only for android, and as such it won't work in the shared module
+
+      * That sucks
+
+* This is as far as I'm getting with this today
+
+* So, in the end, I wasn't really able to make any real progress today
+
 
 
 # ⚓
