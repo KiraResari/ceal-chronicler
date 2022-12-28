@@ -746,16 +746,170 @@
   * Maybe this?
 
     * https://github.com/greenrobot/EventBus
+
     * Yes! This! This is what an event system should be looking like!
+
     * Now let's see if I can integrate it into my project
+
     * My main concern is that this is Java, but I do recall reading that all valid Java is valid Kotlin or something
+
     * Mmmh, doesn't look like it's working yet, however...
+
     * I got it to start up without errors, but now nothing happens when I click on the `To Character Selection Screen`-button
+
     * Debugging has shown that the `ViewController` registers itself in the `EventBus` with ID 2526, and the event also gets posted to that same `EventBus` instance, which I can see has the `ViewController` as one of its subscribers
+
     * And I see that the `mainViewState` variable also gets updated, but the `draw` method is not being called again
+
     * And I can't just re-call `draw` here because the observing method is not `@Composable`
+
+      * In fact, if I try to make it `@Composable`, the project build fails with this error:
+
+        * ````
+          Execution failed for task ':desktop:run'.
+          > Process 'command 'C:\Programs\Android Studio\jre\bin\java.exe'' finished with non-zero exit value 1
+          ````
+
     * Maybe I need to do it with one of those weird `MutableState` objects after all?
 
+      * Nope, doesn't work either =>,<=
+
+    * That sucks!
+
+    * This sucks!!!
+
+    * Okay, well, maybe I need to do some tricks with dependency injection here after all 
+
+    * But before I go down that particular rabbit hole, I'll try posting another help request
+
+      * https://stackoverflow.com/questions/74922830/kotlin-multiplatform-compose-how-to-use-events-to-control-views
+
+* This is as far as I'm getting with this today
+
+
+
+# 28-Dec-2022
+
+* Now continuing with this
+
+* Today I only have a little time left, but let's see where I can get with that
+
+* Last time, I got stuck trying to get the frontend to respond to events
+
+  * I sent a help request to that, and now I got a reply there
+
+  * That one linked me to here, which does seem worth a look:
+
+    * https://github.com/adeo-opensource/kviewmodel--mpp
+    * For one, that's definitely not straightforward, and will probably require extensive remodeling
+    * But since I don't have much yet, "extensive" is not actually all that much
+    * The more interesting question is if it will work
+    * The code samples on the page don't really tell me much, so I have checked out the repository and am gonna look at the compose sample project
+      * Unfortunately, that does not really work, and is not n-complete, so I don't think I can learn much from that
+    * The post also mentioned something called "MVI Architecture", and the plugin mentions that alongside MVVM, so maybe I should look into those
+
+  * So, here's a tutorial for MVI:
+
+    * https://blog.mindorks.com/mvi-architecture-android-tutorial-for-beginners-step-by-step-guide/
+    * Hmm, looks interesting, but the question if it that will work with Compose
+    * For all purposes, it seems like this is more or less the same that I want to do with events
+    * It does seem to be using the Flows instead of events though, so maybe that's the way to go
+
+  * I now found this tutorial for MVI with Compose, so let's have a look at that:
+
+    * https://medium.com/@VolodymyrSch/android-simple-mvi-implementation-with-jetpack-compose-5ee5d6fc4908 
+
+    * Mmmh, this already sounds very valuable:
+
+      * > In Compose, the UI is immutable — there’s no way to update it after it’s been drawn, only create a new state and push changes to the compose.  Whenever a state is changed, Compose recreates the parts of the UI tree  that have changed. This process in the Compose is called recomposition.
+
+    * Okay, so apparently, that one uses something called Dagger.Hilt for Dependency Injection
+
+      * Aaand, again, I am running into trouble getting that imported =>,<=
+
+        * I did write it like this, which did also work for the event bus:
+
+          * ````kotlin
+            kotlin {
+                [...]
+                sourceSets {
+                    val commonMain by getting
+                        dependencies {
+                            implementation("org.greenrobot:eventbus:3.3.1")
+                            implementation("com.google.dagger:hilt-android-gradle-plugin:2.38.1")
+                        }
+                    [...]
+                }
+            }
+            ````
+
+        * But that didn't work, and it fails to import `hilt` in this import statement:
+
+          * `import dagger.hilt.android.lifecycle.HiltViewModel`
+
+        * I now figured that for some strange reason, I needed to add the dependency in the `buildscript` part of the top level `build.gradle.kts`, because I don't know why
+
+          * ````kotlin
+            buildscript {
+                dependencies {
+                    [...]
+                    classpath("com.google.dagger:hilt-android-gradle-plugin:2.38.1")
+                }
+            }
+            ````
+
+        * Now it gets past `hilt`, but fails at `lifecycle` in the import statement =>,<=
+
+        * I think it also needs some more dependencies in the shared module, because why have all dependencies in the same place =>,<=
+
+        * And then, when I tried to import it like it says here:
+
+          * https://developer.android.com/training/dependency-injection/hilt-android#kts
+
+          * ````kotlin
+            plugins {
+              kotlin("kapt")
+              id("com.google.dagger.hilt.android")
+            }
+            
+            android {
+              ...
+            }
+            
+            dependencies {
+              implementation("com.google.dagger:hilt-android:2.44")
+              kapt("com.google.dagger:hilt-android-compiler:2.44")
+            }
+            
+            // Allow references to generated code
+            kapt {
+              correctErrorTypes = true
+            }
+            
+            ````
+
+        * ...I get this error:
+
+          * `Type mismatch: inferred type is String but Action<KaptExtension> was expected`
+
+        * I was now able to resolve it by writing it like this, but don't ask me why =>,<=
+
+          * `"kapt"(Dependencies.Hilt.compiler)`
+
+        * Anyway, the error still persists, so maybe I need even more libraries =>,<=
+
+        * I now also added references to:
+
+          * ````kotlin
+                implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+                implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
+            ````
+
+        * But it's still not working
+
+        * °sob°
+
+        * As a quick action, on the unrecognized `@HiltViewModel` AndroidStudio suggests `Add Library "Gradle: com.google.dagger.hilt-android:2:38:1@aar" to classpath`, but when I try to do that, nothing happens
 
 
 
@@ -796,11 +950,12 @@
 
 ## Language
 
-* Overall: Kinda Good (+)
+* Overall: Neutral (0)
 * Kotlin
 * (+) Data classes
 * (+) Enforces when-statements (switch/case) to be exhaustive
 * (-) Events are not as straightforward as they should be
+* (-) Kotlin Multiplatform does not really implement object-oriented programming, which causes problems (for example with events)
 
 ## IDE
 
@@ -813,11 +968,14 @@
 
 ## Project setup
 
-* Overall: Very bad (---)
+* Overall: Extremely bad (----)
 * (-) A Kotlin Multiplatform Mobile project is set up easily via wizard, but a true multiplatform project that also supports desktop needs to be done manually
 * (-) At the end, you end up with a Moloch with six modules and just as many `build.gradle.kts` files, which are already full of dependencies
   * Put simply: You *start* already with dependency hell
-  * (-) And sometimes references fail to resolve for no apparent reason
+  * (--) And dependencies **regularly** fail to resolve for no apparent reason
+    * At this point, one of my biggest time sinks is trying to figure out why dependencies won't resolve
+    * Dependencies also end up all over the place in different build files, and it is practically impossible to keep an overview over how it is all connected
+    * And they're quite big, to the point where it feels like most of my project is actually build files =>,<=
 
 ## Multiplatform support
 
