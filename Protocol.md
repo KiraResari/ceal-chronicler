@@ -1133,6 +1133,38 @@
 
   * Okay, so now that I've got a working version (and committed that), let me see if working from there, I can also get it to work with less ugly
 
+    * Mmmh, looks like this works too, and is less ugly:
+
+      * ````kotlin
+        class MainViewModel {
+        
+            var state = MainViewState.TITLE
+        
+            var updateState: ((MainViewState) -> Unit) = { }
+                set(value) {
+                    field = value
+                    updateState(state)
+                }
+                
+            @Subscribe
+            fun onOpenCharacterSelectionViewEvent(event: OpenCharacterSelectionViewEvent) {
+                state = MainViewState.CHARACTER
+                updateState(state)
+            }
+        ````
+
+      * Yes, like this, it looks much more agreeable than that hideous null-and-invoke monstrosity from above
+
+    * I am still not 100% happy with it, but after how much pain this already caused me, I am satisfied enough to leave it like this for now
+
+* Okay, so far, so good, but that is only one screen transition
+
+* Next, let's see if I can also get it to work for the Character Screen using the same paradigm
+
+* However, that is something that won't fit into today anymore
+
+* So this is as far as I'm getting with this today
+
 
 
 # ⚓
@@ -1333,6 +1365,109 @@
                   contentDescription = "Some Description"
               )
       ````
+
+### Event-based screen-changing
+
+* Import the Greenrobot Eventbus dependency in the `build.gradle.kts` of the `shared` and `shared-ui` modules
+
+  * ````kotlin
+    kotlin {
+        [...]
+        sourceSets {
+            val commonMain by getting {
+                dependencies {
+                    implementation("org.greenrobot:eventbus:3.3.1")
+                    [...]
+                }
+            }
+            [...]
+        }
+    }
+    ````
+
+* Define the event in `shared.commonMain` like this:
+
+  * ````
+    class OpenCharacterSelectionViewEvent {
+    }
+    ````
+
+* Fire the event like this:
+
+  * ````kotlin
+    import com.tri_tail.ceal_chronicler.events.OpenCharacterSelectionViewEvent
+    import org.greenrobot.eventbus.EventBus
+    
+    private fun clickButton() {
+        val eventBus = EventBus.getDefault()
+        eventBus.post(OpenCharacterSelectionViewEvent())
+    }
+    ````
+
+* Create a view model like this that handles the event and provides a delegate function handle that the view can use to get the changed value:
+
+  * ````kotlin
+    import com.tri_tail.ceal_chronicler.events.OpenCharacterSelectionViewEvent
+    import org.greenrobot.eventbus.EventBus
+    import org.greenrobot.eventbus.Subscribe
+    
+    class MainViewModel {
+    
+        var state = MainViewState.TITLE
+    
+        var updateState: ((MainViewState) -> Unit) = { }
+            set(value) {
+                field = value
+                updateState(state)
+            }
+    
+        init {
+            val eventBus = EventBus.getDefault()
+            eventBus.register(this)
+        }
+    
+        @Subscribe
+        fun onOpenCharacterSelectionViewEvent(event: OpenCharacterSelectionViewEvent) {
+            state = MainViewState.CHARACTER
+            updateState(state)
+        }
+    }
+    ````
+
+* In the view, make the `state` a `remember` with a `mutableStateOf(..., policy = neverEqualPolicy())`, and the assign the delegate  like this:
+
+  * ````kotlin
+    import androidx.compose.runtime.Composable
+    import androidx.compose.runtime.mutableStateOf
+    import androidx.compose.runtime.*
+    import com.tri_tail.ceal_chronicler.models.main_view.MainViewModel
+    import com.tri_tail.ceal_chronicler.models.main_view.MainViewState
+    import com.tri_tail.ceal_chronicler.theme.AppTheme
+    import com.tri_tail.ceal_chronicler.ui.TitleScreen
+    import com.tri_tail.ceal_chronicler.ui.characters.DisplayCharacterSelector
+    
+    @Composable
+    fun MainView(model: MainViewModel = MainViewModel()) {
+    
+        var state by remember {
+            mutableStateOf(
+                model.state,
+                policy = neverEqualPolicy()
+            )
+        }
+    
+        model.updateState = {
+            state = it
+        }
+    
+        AppTheme {
+            when (state) {
+                MainViewState.TITLE -> TitleScreen()
+                MainViewState.CHARACTER -> DisplayCharacterSelector()
+            }
+        }
+    }
+    ````
 
 
 

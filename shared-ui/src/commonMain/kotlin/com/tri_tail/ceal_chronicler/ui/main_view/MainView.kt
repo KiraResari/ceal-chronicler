@@ -14,7 +14,7 @@ fun MainView(model: MainViewModel = MainViewModel()) {
 
     var state by remember {
         mutableStateOf(
-            MainViewState.TITLE,
+            model.state,
             policy = neverEqualPolicy()
         )
     }

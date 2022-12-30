@@ -6,7 +6,7 @@ import org.greenrobot.eventbus.Subscribe
 
 class MainViewModel {
 
-    private var state = MainViewState.TITLE
+    var state = MainViewState.TITLE
 
     var updateState: ((MainViewState) -> Unit) = { }
         set(value) {
@@ -24,6 +24,4 @@ class MainViewModel {
         state = MainViewState.CHARACTER
         updateState(state)
     }
-
-
 }
