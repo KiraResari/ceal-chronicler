@@ -1,4 +1,4 @@
-package com.tri_tail.ceal_chronicler.ui.main_view
+package com.tri_tail.ceal_chronicler.models.main_view
 
 enum class MainViewState {
     TITLE,

@@ -10,6 +10,7 @@ object Versions{
     const val activityCompose = "1.5.1"
     const val jvm = "11"
     const val icerockResources = "0.20.1"
+    const val eventBus = "3.3.1"
 }
 
 object Namespaces{
@@ -21,6 +22,7 @@ object Dependencies{
     const val activityCompose = "androidx.activity:activity-compose:"
     const val androidGradlePlugin = "com.android.tools.build:gradle:${Versions.Plugins.android}"
     const val kotlinGradlePlugin= "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.Plugins.kotlin}"
+    const val eventBus = "org.greenrobot:eventbus:${Versions.eventBus}"
     object Compose{
         const val ui = "androidx.compose.ui:ui:${Versions.androidCompose}"
         const val uiGraphics = "androidx.compose.ui:ui-graphics:${Versions.androidCompose}"

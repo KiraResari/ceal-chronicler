@@ -4,14 +4,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.tri_tail.ceal_chronicler.ViewController
 import com.tri_tail.ceal_chronicler.ui.main_view.MainView
 
 fun main() {
     application {
         val windowState = rememberWindowState()
-
-        val viewController = ViewController()
 
         Window(
             onCloseRequest = ::exitApplication,
@@ -19,7 +16,7 @@ fun main() {
             title = "Ceal Chronicler"
         ) {
             Surface(modifier = Modifier.fillMaxSize()) {
-                viewController.draw()
+                MainView()
             }
         }
     }

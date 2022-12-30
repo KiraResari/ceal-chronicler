@@ -23,10 +23,11 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
             dependencies {
-                implementation("org.greenrobot:eventbus:3.3.1")
+                implementation(Dependencies.eventBus)
             }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))

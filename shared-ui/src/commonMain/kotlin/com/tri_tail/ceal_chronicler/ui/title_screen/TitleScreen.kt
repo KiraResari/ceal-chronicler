@@ -10,7 +10,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -21,7 +20,6 @@ import com.tri_tail.ceal_chronicler.painterResource
 import com.tri_tail.ceal_chronicler.theme.primaryColor
 import com.tri_tail.ceal_chronicler.theme.primaryDarkColor
 import com.tri_tail.ceal_chronicler.theme.typography
-import com.tri_tail.ceal_chronicler.ui.main_view.MainViewState
 import dev.icerock.moko.resources.compose.stringResource
 import org.greenrobot.eventbus.EventBus
 

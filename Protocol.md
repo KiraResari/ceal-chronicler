@@ -923,6 +923,214 @@
 
 * So, in the end, I wasn't really able to make any real progress today
 
+* But at least, I did learn the basic truth about why my event system could not update the view, so I guess that's one thing
+
+* Next time, I think I'll look at the `kmpf-materials` sample project again, because I think they did something with models in an advanced tutorial, so mayhap I can copycat something from there
+
+
+
+# 30-Dec-2022
+
+* Now continuing with this
+
+* Last time, I tried and failed in getting the backend-frontend communication to work
+
+* This time around, I wanted to take a look at how the `kmpf-materials` sample does it
+
+  * That's the one where the tutorials are behind a paywall starting with chapter 6
+
+  * I looked at the code from Chapter 9 "Dependency Injection", and noticed that one having views not unlike the ones I saw last turn, but I don't know how they got there, and frankly, I have no idea what they do
+
+  * In fact, it *does* look like a completely new tutorial project altogether
+
+  * The previous chapters are:
+
+    * 6. Connect to Platform-Specific API
+    7. 7. App Architecture
+    8. 8. Testing 
+
+  * I'll now go over the sample code for them one by one to see where the models are introduced and thus hopefully understand them
+
+  * Doesn't look like they're in Chapter 6 "Connect to Platform-Specific API"
+
+  * Looks like the models are added in Chapter 7 "App Architecture", which is also where I'd have expected them
+
+    * Since the paywall begins only some distance into the tutorial, that means I can still read the header of that and hopefully gain some insights from that:
+
+      * https://www.kodeco.com/books/kotlin-multiplatform-by-tutorials/v1.0/chapters/7-app-architecture
+      * Okay, so unfortunately, it's not very far in before the paywall begins, but it *is* enough to confirm that this is really a wholly new app that was started in Chapter 6, and that it uses the MV(V)C pattern
+      * Let's see if this is enough to let me make sense of it
+
+    * One thing I take note of is how the `BaseViewModel` is an abstract expect class in `commonMain`
+
+      * ````kotlin
+        expect abstract class BaseViewModel()
+        ````
+
+    * In android it is "implemented" like this:
+
+      * ````kotlin
+        import androidx.lifecycle.ViewModel
+        
+        actual abstract class BaseViewModel : ViewModel()
+        ````
+
+    * ...while on desktop it is implemented like this:
+
+      * ````kotlin
+        actual abstract class BaseViewModel actual constructor()
+        ````
+
+    * This has profound implications which probably also relate to my troubles last turn. I should definitely **keep this in mind**
+
+    * Mmmh, I think I am beginning to understand how this is supposed to work together:
+
+      * Every View (which is a `@Composable` function) has a Model attached to it via default parameter
+
+        * ````kotlin
+          @Composable
+          fun AboutView(viewModel: AboutViewModel = AboutViewModel()) {
+            ContentView(items = viewModel.items)
+          }
+          ````
+
+        * And I think in the DI-Tutorial, this was instead injected from the context
+
+      * The model meanwhile contains the things that can change, at least if I got it right
+
+  * Let's just try it out to see if that's how it works
+
+    * In theory, I suppose that means I rename my `ViewController` into a `ViewModel` and add it to the constructor like this
+
+    * Then, the events should still reach the `ViewModel` as usual, and the screen change will hopefully work again
+
+    * However, now I am running into dependency issues AGAIN =>,<=
+
+      * This time, the `greenrobot` in this import statement is not resolving:
+
+        * ````kotlin
+          import org.greenrobot.eventbus.EventBus
+          ````
+
+      * ...despite me having imported the eventbus package like this in the `shared` module's `build.gradle.kts`:
+
+        * ````kotlin
+          kotlin {
+              [...]
+              sourceSets {
+                  val commonMain by getting
+                      dependencies {
+                          implementation(Dependencies.eventBus)
+                      }
+                  [...]
+                  }
+              }
+          }
+          ````
+
+      * Meanwhile, in the `shared-ui` module, where it *does* work, I imported it like this:
+
+        * ````kotlin
+          kotlin {
+              [...]
+              sourceSets {
+                  val commonMain by getting {
+                      dependencies {
+                          [...]
+                          implementation(Dependencies.eventBus)
+                          [...]
+                      }
+                  }
+                  [...]
+              }
+          }
+          ````
+
+      * ...I can't see a difference
+
+      * ...so why isn't it working in the `shared` module? °sob°
+
+      * Okay, so in detailed inspection, I noticed something extremely weird there:
+
+        * In the `shared-ui` module, where it works, the `getting` is syntax-highlighted in yellow, and the `dependencies` is of the type `this: KotlinDependencyHandler`
+        * Meanwhile, in the `shared` module, where it doesn't work, `getting` is syntax-highlighted in purple, and `dependencies` is of the type `this: DependencyHandlerScope`
+          * HOWEVER, in the next block below that, the `getting` is yellow again, and the `dependencies` is of the (assumedly correct) type again
+        * Okay, so text compare helped: Though visually very identical, I was missing a pair of curly braces around the `dependencies` block
+
+      * The import is still not working though =>,<=
+
+      * Or actually, it looks like it is, but for some reason, it is still being displayed as an error even though it works when running the app
+
+      * And with "works", I mean "Clicking on the start button still doesn't take me to the character screen" =<,<=
+
+      * Maybe having a look at the `RemindersView` and its model in the sample project will help me here
+
+        * So, if the app runs, there's a "Reminders" view with a text input box, and upon entering a text and pressing the enter-key, a radio button with the entered text appears, which is drawn differently depending on whether that radio button is checked or not
+
+        * All that happens in the `ContentView` function
+
+        * Okay... things are starting to go from "I don't understand how this is supposed to work" to "I understand how this is supposed to work, and it's downright scary"
+
+          * `RemindersView`
+
+          * ``````kotlin
+              var reminders by remember {
+                mutableStateOf(listOf<Reminder>(), policy = neverEqualPolicy())
+              }
+            
+              viewModel.onRemindersUpdated = {
+                reminders = it
+              }
+            ``````
+
+          * `RemindersViewModel`
+
+          * ````kotlin
+              private val repository = RemindersRepository()
+            
+              private val reminders: List<Reminder>
+                get() = repository.reminders
+                
+              var onRemindersUpdated: ((List<Reminder>) -> Unit)? = null
+                set(value) {
+                  field = value
+                  onRemindersUpdated?.invoke(reminders)
+                }
+            
+              fun markReminder(id: String, isCompleted: Boolean) {
+                repository.markReminder(id = id, isCompleted = isCompleted)
+                onRemindersUpdated?.invoke(reminders)
+              }
+            ````
+
+          * So, if my understanding is correct, the gist of it is that the `RemindersViewModel` has a delegate function `onRemindersUpdated`, which is **null** by default (scary), and is then set by the `RemindersView` in such a way that its `reminders` variable is updated
+
+            * I don't get what the `-> Unit` does though
+
+        * Okay, so setting aside the fact that this does not look nice and I wouldn't want to have it code that I show anyone (primarily because of the `null` assignment, but also because of the duplicate call of `onRemindersUpdated?.invoke(reminders)`), let's see if using this pattern, I can get my code to behave as I want it to 
+
+          * I tried it, but it's still not working
+          * Let me debug this to see what happens
+          * Mmmh, nope, the state is correctly set now
+          * Maybe this is the wrong approach after all, and the real magic happens somewhere else?
+
+        * I now tried writing my `state` variable in the `MainView` like this:
+
+          * ````kotlin
+                var state by remember {
+                    mutableStateOf(
+                        MainViewState.TITLE,
+                        policy = neverEqualPolicy()
+                    )
+                }
+            ````
+
+          * BREAKTHROUGH! We won!
+
+          * Alright! So that was the final piece of the puzzle
+
+          * So, after several days of being stuck on this, I now finally managed to get the event-based view changing to work... at least on one occasion
+
 
 
 # ⚓
@@ -971,12 +1179,15 @@
 
 ## IDE
 
-* Overall: Neutral (0)
+* Overall: Kinda bad (-)
 * (+) The IDE is Android Studio, and it works well
 * (+) Refactoring, code navigation and syntax highlighting all work without problems
   * Refactoring hasn't been thoroughly tested yet though
 * (-) Auto import is unreliable, sometimes offers only garbage, and overall I end up having to manually write/copy imports a lot
 * (-) Syntax highlighting takes several seconds to update on a change, and so does auto-complete
+* (-) Sometimes displays errors where there are none
+  * That is, the IDE claims that references can't be resolved and half the lines are red, but at runtime everything works fine
+
 
 ## Project setup
 
@@ -988,6 +1199,7 @@
     * At this point, one of my biggest time sinks is trying to figure out why dependencies won't resolve
     * Dependencies also end up all over the place in different build files, and it is practically impossible to keep an overview over how it is all connected
     * And they're quite big, to the point where it feels like most of my project is actually build files =>,<=
+    * Sometimes dependencies fail to resolve in one project although they work just fine in another project, implemented in just the same way
 
 ## Multiplatform support
 
