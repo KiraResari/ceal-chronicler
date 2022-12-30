@@ -6,12 +6,12 @@ import org.greenrobot.eventbus.Subscribe
 
 class MainViewModel {
 
-    var state = MainViewState.TITLE
+    private var state = MainViewState.TITLE
 
-    var onStateUpdated: ((MainViewState) -> Unit)? = null
+    var updateState: ((MainViewState) -> Unit) = { }
         set(value) {
             field = value
-            onStateUpdated?.invoke(state)
+            updateState(state)
         }
 
     init {
@@ -22,7 +22,7 @@ class MainViewModel {
     @Subscribe
     fun onOpenCharacterSelectionViewEvent(event: OpenCharacterSelectionViewEvent) {
         state = MainViewState.CHARACTER
-        onStateUpdated?.invoke(state)
+        updateState(state)
     }
 
 

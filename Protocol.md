@@ -1131,6 +1131,8 @@
 
           * So, after several days of being stuck on this, I now finally managed to get the event-based view changing to work... at least on one occasion
 
+  * Okay, so now that I've got a working version (and committed that), let me see if working from there, I can also get it to work with less ugly
+
 
 
 # ⚓
