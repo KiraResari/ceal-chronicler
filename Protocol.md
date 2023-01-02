@@ -1077,7 +1077,7 @@
               var reminders by remember {
                 mutableStateOf(listOf<Reminder>(), policy = neverEqualPolicy())
               }
-            
+              
               viewModel.onRemindersUpdated = {
                 reminders = it
               }
@@ -1087,7 +1087,7 @@
 
           * ````kotlin
               private val repository = RemindersRepository()
-            
+              
               private val reminders: List<Reminder>
                 get() = repository.reminders
                 
@@ -1096,7 +1096,7 @@
                   field = value
                   onRemindersUpdated?.invoke(reminders)
                 }
-            
+              
               fun markReminder(id: String, isCompleted: Boolean) {
                 repository.markReminder(id = id, isCompleted = isCompleted)
                 onRemindersUpdated?.invoke(reminders)
@@ -1167,6 +1167,130 @@
 
 
 
+# 2-Jan-2023
+
+* Now continuing with this
+
+* Last time, I got the basic event-view system to work 
+
+* I now checked that it works equally fine on both the desktop app as well as the android app
+
+* Anyway, next I want to get the event system to work for the character selection
+
+  * I worked on that for a bit, and as I did I came across many, many occurrences where the IDE did not recognize imports, auto-import did not work, and neither did auto-complete
+
+  * Also, the weird block for the `selectedCharacterId` is all in red
+
+  * And yet, the program still compiles and runs without compile errors or exceptions
+
+  * However, now when I click a character button, this message appears in the console:
+
+    * ````
+      [FINE] No subscribers registered for event class com.tri_tail.ceal_chronicler.events.SelectCharacterEvent
+      [FINE] No subscribers registered for event class org.greenrobot.eventbus.NoSubscriberEvent
+      ````
+
+  * That's weird, because I _did_ register a subscriber here:
+
+    * ````kotlin
+          @Subscribe
+          fun onSelectCharacterEvent(event: SelectCharacterEvent){
+              selectedCharacter = Optional.of(event.characterId)
+              updateSelectedCharacter(selectedCharacter)
+          }
+      ````
+
+    * Ah, wait, I think the `CharakterSelectorModel` is still missing this:
+
+      * ````kotlin
+            init {
+                val eventBus = EventBus.getDefault()
+                eventBus.register(this)
+            }
+        ````
+
+    * Okay, so now this works
+
+  * However, the desired behavior does not occur
+
+  * Instead, when I click a character button now, the character buttons start switching places perpetually
+
+    * This is possibly related to this red block that I haven't been able to figure out:
+
+      * ````kotlin
+            var selectedCharacterId: Optional<CharacterId> by remember {
+                mutableStateOf(
+                    model.selectedCharacter,
+                    policy = neverEqualPolicy()
+                )
+            }
+        ````
+
+    * The errors here are:
+
+      * ````
+        Property delegate must have a 'getValue(Nothing?, KProperty<*>)' method. None of the following functions is suitable:
+        public inline operator fun <T> State<Optional<CharacterId>>.getValue(thisObj: Any?, property: KProperty<*>): Optional<CharacterId> defined in androidx.compose.runtime
+        
+        Property delegate must have a 'setValue(Nothing?, KProperty<*&>, Optional<CharacterId>)' method. None of the following functions is suitable:
+        public inline operator fun <T> MutableState<Optional<CharacterId>>.setValue(thisObj: Any?, property: KProperty<*>, value: Optional<CharacterId>): Unit defined in androidx.compose.runtime
+        ````
+
+    * I now tried it like this:
+
+      * ````kotlin
+            var selectedCharacterId: MutableState<Optional<CharacterId>> =
+                remember { mutableStateOf(model.selectedCharacter) }
+        ````
+
+      * With that, selecting a character now works once, and when I click on "Back", I am returned to the character selection, but then I am stuck there, and the buttons occasionally switch places if I click them
+
+      * One weird thing that I observe is that if I set a breakpoint in `onSelectCharacterEvent`, than that one triggers repeatedly if I click on a character button
+
+    * I now tried it like this:
+
+      * ````kotlin
+            var selectedCharacterId: MutableState<Optional<CharacterId>> =
+                remember {
+                    mutableStateOf(
+                        model.selectedCharacter,
+                        policy = neverEqualPolicy()
+                    )
+                }
+        ````
+
+      * That causes the perpetual back-and-forth-switching again
+
+      * I debugged it, and I observed the following:
+
+        * When first entering the character screen, the method `DisplaySelectableCharacters` is called once, as intended
+        * When clicking on a character button, the  method `DisplayCharacterScreen` is called, and the correct character screen is displayed, as intended
+        * However, then the method `DisplaySelectableCharacters` is immediately called in the next frame for no obvious reason, and the character screen disappears again
+        * After that, `DisplaySelectableCharacters` is repeatedly called, and the `selectedCharacterId` has a a different Object ID every time, which probably has something to do with the `policy = neverEqualPolicy()`
+
+      * Further debugging showed that there may be an ID issue, so I now implemented the `RandomReadableId` class to make this easier to debug
+
+        * When the character selection screen is first opened, the `CharakterRepository` contains characters with these IDs:
+          * Tame Jay Sigma
+          * Bold Zebra Kappa
+        * And when I then click on the first button, the character with the ID "Tame Jay Sigma" is opened
+        * After returning back to the character selection, the `CharakterRepository` contains characters with these IDs:
+          * Alert Quail Gamma
+          * Ugly Rat Psi
+        * That is already one level of worrying, but also understandable at some level, because I already feared that the app might create a new `CharacterRepository` at each step because it's currently not remembered
+        * When I then click on the first button, the `selectedCharacterId` correctly becomes "Alert Quail Gamma"
+          * However, the code still jumps into the block that should happen if the character could not be found in the repository
+          * Interestingly, I observe that by that time, the repository contains these character IDs:
+            * Sad Koala Tau
+            * Great Ibex Iota
+          * Also, I note that the event was apparently fired multiple times for some reason
+
+      * Anyway, while I do not understand the whole depth of the problem, I figure that the most damaging part currently is that the `CharacterRepository` is not being remembered
+
+      * Yes, looks like that fixed it 
+
+
+
 # ⚓
 
 
@@ -1213,14 +1337,17 @@
 
 ## IDE
 
-* Overall: Kinda bad (-)
-* (+) The IDE is Android Studio, and it works well
-* (+) Refactoring, code navigation and syntax highlighting all work without problems
-  * Refactoring hasn't been thoroughly tested yet though
+* Overall: Very bad (---)
+* (+) The IDE is Android Studio, which is free
+* (+) Refactoring, code navigation and syntax highlighting basically work
+* (-) Refactoring sometimes does not correctly adjust code in other modules
 * (-) Auto import is unreliable, sometimes offers only garbage, and overall I end up having to manually write/copy imports a lot
 * (-) Syntax highlighting takes several seconds to update on a change, and so does auto-complete
-* (-) Sometimes displays errors where there are none
+* (-) Regularly displays errors where there are none
   * That is, the IDE claims that references can't be resolved and half the lines are red, but at runtime everything works fine
+  * And then, auto-complete and auto-import naturally no longer works
+* (-) Sometimes does not offer certain options like "New > Package" in some projects, forcing you to add folders manually if it auto-collapsed a chain of folders - like "models.main_view" - and you can't add a folder below "models" in the IDE anymore
+* (-) Asks every day if you want to add new files to git, even if you check "Don't ask again" 
 
 
 ## Project setup

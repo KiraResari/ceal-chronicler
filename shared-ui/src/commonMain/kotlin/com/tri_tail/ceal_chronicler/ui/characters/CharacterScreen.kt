@@ -17,15 +17,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.tri_tail.ceal_chronicler.characters.Character
-import com.tri_tail.ceal_chronicler.MR
+import com.tri_tail.ceal_chronicler.events.DeselectCharacterEvent
 import com.tri_tail.ceal_chronicler.theme.primaryColor
 import com.tri_tail.ceal_chronicler.theme.primaryDarkColor
 import com.tri_tail.ceal_chronicler.theme.typography
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 @Composable
-fun DisplayCharacterScreen(selectedCharacter: MutableState<Optional<Character>>) {
-    val character = selectedCharacter.value.get();
+fun DisplayCharacterScreen(character: Character) {
     Card(
         elevation = 10.dp,
         modifier = Modifier.padding(15.dp)
@@ -59,11 +59,16 @@ fun DisplayCharacterScreen(selectedCharacter: MutableState<Optional<Character>>)
                 textAlign = TextAlign.Start
             )
             Button(
-                onClick = { selectedCharacter.value = Optional.empty() },
+                onClick = { clickBackButton() },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
             ) {
                 Text(text = "↩ Back")
             }
         }
     }
+}
+
+private fun clickBackButton() {
+    val eventBus = EventBus.getDefault()
+    eventBus.post(DeselectCharacterEvent())
 }
