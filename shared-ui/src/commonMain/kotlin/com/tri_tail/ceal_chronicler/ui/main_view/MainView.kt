@@ -19,7 +19,7 @@ fun DisplayMainView(model: MainViewModel = MainViewModel()) {
         )
     }
 
-    model.updateState = {
+    model.onStateUpdate = {
         state = it
     }
 

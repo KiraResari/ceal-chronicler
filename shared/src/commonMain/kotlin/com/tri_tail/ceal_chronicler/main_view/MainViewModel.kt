@@ -8,11 +8,7 @@ class MainViewModel {
 
     var state = MainViewState.TITLE
 
-    var updateState: ((MainViewState) -> Unit) = { }
-        set(value) {
-            field = value
-            updateState(state)
-        }
+    var onStateUpdate: ((MainViewState) -> Unit) = { }
 
     init {
         val eventBus = EventBus.getDefault()
@@ -22,6 +18,6 @@ class MainViewModel {
     @Subscribe
     fun onOpenCharacterSelectionViewEvent(event: OpenCharacterSelectionViewEvent) {
         state = MainViewState.CHARACTER
-        updateState(state)
+        onStateUpdate(state)
     }
 }

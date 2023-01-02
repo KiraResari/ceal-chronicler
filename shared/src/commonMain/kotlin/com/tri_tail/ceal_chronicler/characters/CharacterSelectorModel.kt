@@ -9,7 +9,7 @@ import org.greenrobot.eventbus.Subscribe
 class CharacterSelectorModel {
     var selectedCharacter: Optional<CharacterId> = Optional.empty()
 
-    var updateSelectedCharacter: ((Optional<CharacterId>) -> Unit) = { }
+    var onSelectedCharacterUpdate: ((Optional<CharacterId>) -> Unit) = { }
 
     init {
         val eventBus = EventBus.getDefault()
@@ -19,14 +19,12 @@ class CharacterSelectorModel {
     @Subscribe
     fun onSelectCharacterEvent(event: SelectCharacterEvent){
         selectedCharacter = Optional.of(event.characterId)
-        updateSelectedCharacter(selectedCharacter)
+        onSelectedCharacterUpdate(selectedCharacter)
     }
 
     @Subscribe
     fun onDeselectCharacterEvent(event: DeselectCharacterEvent){
         selectedCharacter = Optional.empty()
-        updateSelectedCharacter(selectedCharacter)
+        onSelectedCharacterUpdate(selectedCharacter)
     }
-
-
 }

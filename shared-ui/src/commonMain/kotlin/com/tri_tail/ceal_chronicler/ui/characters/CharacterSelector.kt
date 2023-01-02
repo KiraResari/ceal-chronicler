@@ -24,19 +24,19 @@ import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 @Composable
-fun DisplayCharacterSelector(
-    model: CharacterSelectorModel = CharacterSelectorModel()
-) {
+fun DisplayCharacterSelector() {
+    var model: MutableState<CharacterSelectorModel> =
+        remember { mutableStateOf(CharacterSelectorModel()) }
     var repository: MutableState<CharacterRepository> =
         remember { mutableStateOf(CharacterRepository()) }
     var selectedCharacterId: MutableState<Optional<CharacterId>> =
         remember {
             mutableStateOf(
-                model.selectedCharacter
+                model.value.selectedCharacter
             )
         }
 
-    model.updateSelectedCharacter = {
+    model.value.onSelectedCharacterUpdate = {
         selectedCharacterId.value = it
     }
 

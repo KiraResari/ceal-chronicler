@@ -1289,6 +1289,14 @@
 
       * Yes, looks like that fixed it 
 
+      * However, it looks like the events are still being thrown multiple times, and exactly one additional time for each time I click the buttons (First once, then twice, then thrice...)
+
+        * I note that while the event is only thrown once each time I click on the button, it is then handled one additional time for each time it has been thrown before
+        * Aaah, I think I get why...
+        * It's because the `CharacteSelectorModel` is also not remembered, so I get a new one for each time 
+
+
+
 
 
 # ⚓
