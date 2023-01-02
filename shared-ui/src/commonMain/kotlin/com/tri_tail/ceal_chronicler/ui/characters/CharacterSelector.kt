@@ -25,43 +25,39 @@ import java.util.*
 
 @Composable
 fun DisplayCharacterSelector() {
-    var model: MutableState<CharacterSelectorModel> =
-        remember { mutableStateOf(CharacterSelectorModel()) }
-    var repository: MutableState<CharacterRepository> =
-        remember { mutableStateOf(CharacterRepository()) }
-    var selectedCharacterId: MutableState<Optional<CharacterId>> =
+    val model: CharacterSelectorModel = remember { CharacterSelectorModel() }
+    val repository: CharacterRepository = remember { CharacterRepository() }
+    val selectedCharacterId: MutableState<Optional<CharacterId>> =
         remember {
             mutableStateOf(
-                model.value.selectedCharacter
+                model.selectedCharacter
             )
         }
 
-    model.value.onSelectedCharacterUpdate = {
+    model.onSelectedCharacterUpdate = {
         selectedCharacterId.value = it
     }
 
     if (selectedCharacterId.value.isPresent) {
         val selectedCharacterIdValue = selectedCharacterId.value.get();
-        val character = repository.value.get(selectedCharacterIdValue)
+        val character = repository.get(selectedCharacterIdValue)
         if (character.isPresent) {
             DisplayCharacterScreen(character.get())
         } else {
             DisplaySelectableCharactersWithError(
                 "Could not find character with ID: " + selectedCharacterIdValue,
-                repository.value,
-                selectedCharacterId.value
+                repository
             )
         }
     } else {
-        DisplaySelectableCharacters(repository.value, selectedCharacterId.value)
+        DisplaySelectableCharacters(repository)
     }
 }
 
 @Composable
 fun DisplaySelectableCharactersWithError(
     errorMessage: String,
-    repository: CharacterRepository,
-    selectedCharacterId: Optional<CharacterId>
+    repository: CharacterRepository
 ) {
     Card(
         elevation = 10.dp,
@@ -69,30 +65,20 @@ fun DisplaySelectableCharactersWithError(
     ) {
         Column(
             modifier = Modifier
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            primaryColor,
-                            primaryDarkColor,
-                        )
-                    )
-                )
+                .background(Color.Red)
                 .padding(15.dp)
         ) {
             Text(
                 text = errorMessage,
                 style = typography.h2
             )
+            DisplaySelectableCharacters(repository)
         }
     }
-    DisplaySelectableCharacters(repository, selectedCharacterId)
 }
 
 @Composable
-private fun DisplaySelectableCharacters(
-    repository: CharacterRepository,
-    selectedCharacterId: Optional<CharacterId>
-) {
+private fun DisplaySelectableCharacters(repository: CharacterRepository) {
     val characters: Iterable<Character> =
         repository.getCharacters();
 
@@ -119,17 +105,7 @@ private fun DisplaySelectableCharacters(
             for (character in characters) {
                 DisplayCharacterButton(character)
             }
-            DebugDisplaySelectedCharacterId(selectedCharacterId)
         }
-    }
-}
-
-@Composable
-fun DebugDisplaySelectedCharacterId(selectedCharacterId: Optional<CharacterId>) {
-    if (selectedCharacterId.isPresent) {
-        Text("Selected Character Id: " + selectedCharacterId.get())
-    } else {
-        Text("No character selected")
     }
 }
 
