@@ -1,5 +1,6 @@
 package com.tri_tail.ceal_chronicler.characters
 
+import com.tri_tail.ceal_chronicler.items.Weapon
 import java.util.*
 
 class CharacterRepository {
@@ -9,7 +10,11 @@ class CharacterRepository {
     init {
         add(Character())
         add(
-            Character(name = "Idra Kegis", species = "Dragon", weapon = "Claws")
+            Character(
+                name = CharacterName("Idra Kegis"),
+                species = Species("Dragon"),
+                weapon = Weapon("Claws")
+            )
         )
     }
 

@@ -2,11 +2,12 @@ package com.tri_tail.ceal_chronicler.characters
 
 import com.tri_tail.ceal_chronicler.events.DeselectCharacterEvent
 import com.tri_tail.ceal_chronicler.events.SelectCharacterEvent
+import com.tri_tail.ceal_chronicler.items.Weapon
 import java.util.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class CharacterSelectorModel(val repository: CharacterRepository) {
+class CharacterModel(private val repository: CharacterRepository) {
     var selectedCharacter: Optional<CharacterId> = Optional.empty()
 
     var onSelectedCharacterUpdate: ((Optional<CharacterId>) -> Unit) = { }
@@ -17,13 +18,13 @@ class CharacterSelectorModel(val repository: CharacterRepository) {
     }
 
     @Subscribe
-    fun onSelectCharacterEvent(event: SelectCharacterEvent){
+    fun onSelectCharacterEvent(event: SelectCharacterEvent) {
         selectedCharacter = Optional.of(event.characterId)
         onSelectedCharacterUpdate(selectedCharacter)
     }
 
     @Subscribe
-    fun onDeselectCharacterEvent(event: DeselectCharacterEvent){
+    fun onDeselectCharacterEvent(event: DeselectCharacterEvent) {
         selectedCharacter = Optional.empty()
         onSelectedCharacterUpdate(selectedCharacter)
     }
@@ -34,5 +35,18 @@ class CharacterSelectorModel(val repository: CharacterRepository) {
 
     fun getCharacters(): Iterable<Character> {
         return repository.getCharacters()
+    }
+
+    fun addCharacter(
+        characterName: CharacterName,
+        species: Species,
+        weapon: Weapon
+    ) {
+        val character = Character(
+            name = characterName,
+            species = species,
+            weapon = weapon
+        )
+        repository.add(character)
     }
 }

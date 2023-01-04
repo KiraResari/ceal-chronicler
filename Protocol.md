@@ -1328,6 +1328,10 @@
   * Looks like I managed to add dependency injection to all my _three_ different types of backend classes
   * The only thing that's a bit annoying is that I have to pass the `koin` reference through everywhere, which is needed because the frontend doesn't use classes, so I can't have them inherit from `KoinComponent`
     * I figure I could put it into a global variable, like how the `kmpfMaterials` sample project did it (at least I _think_ that's what's happening there...), but I have instead chosen to pass it through, because that makes it easy to understand where it comes from
+* Next, I want to get to actually manipulating the data, such as adding a character and editing their data
+  * This will also be a good chance to integrate some tests, as well as see how Koin works with tests
+    * I note with regret that Android Studio does not have what is one of my favorite functions from Eclipse, namly creating a test class for a class by right-clicking on it
+    * I'll instead copycat from the `kmpf-materials` instead
 
 
 
@@ -1370,12 +1374,15 @@
 
 ## Language
 
-* Overall: Neutral (0)
+* Overall: Bad (--)
 * Kotlin
 * (+) Data classes
+  * ...they don't allow for inheritance though
+
 * (+) Enforces when-statements (switch/case) to be exhaustive
 * (-) Events are not as straightforward as they should be
 * (-) Kotlin Multiplatform does not really implement object-oriented programming, which causes problems (for example with events)
+* (--) Kotlin requires classes to be explicitly open to extension, which violates the OCP
 
 ## IDE
 
@@ -1385,9 +1392,10 @@
 * (-) Refactoring sometimes does not correctly adjust code in other modules
 * (-) Auto import is unreliable, sometimes offers only garbage, and overall I end up having to manually write/copy imports a lot
 * (-) Syntax highlighting takes several seconds to update on a change, and so does auto-complete
-* (-) Regularly displays errors where there are none
+* (-) Regularly displays errors where there are none (or the other way around)
   * That is, the IDE claims that references can't be resolved and half the lines are red, but at runtime everything works fine
   * And then, auto-complete and auto-import naturally no longer works
+  * Also, at times it does not display errors that are clearly there, leaving you to guess what went wrong when the app inevitably crashes on compile
 * (-) Sometimes does not offer certain options like "New > Package" in some projects, forcing you to add folders manually if it auto-collapsed a chain of folders - like "models.main_view" - and you can't add a folder below "models" in the IDE anymore
 * (-) Asks every day if you want to add new files to git, even if you check "Don't ask again" 
 

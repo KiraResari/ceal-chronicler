@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.tri_tail.ceal_chronicler.characters.Character
 import com.tri_tail.ceal_chronicler.characters.CharacterId
-import com.tri_tail.ceal_chronicler.characters.CharacterSelectorModel
+import com.tri_tail.ceal_chronicler.characters.CharacterModel
 import com.tri_tail.ceal_chronicler.events.SelectCharacterEvent
 import com.tri_tail.ceal_chronicler.theme.primaryColor
 import com.tri_tail.ceal_chronicler.theme.primaryDarkColor
@@ -25,7 +25,7 @@ import java.util.*
 
 @Composable
 fun DisplayCharacterSelector(koin: Koin) {
-    val model: CharacterSelectorModel = koin.get()
+    val model: CharacterModel = koin.get()
     val selectedCharacterId: MutableState<Optional<CharacterId>> =
         remember {
             mutableStateOf(
@@ -56,7 +56,7 @@ fun DisplayCharacterSelector(koin: Koin) {
 @Composable
 fun DisplaySelectableCharactersWithError(
     errorMessage: String,
-    model: CharacterSelectorModel
+    model: CharacterModel
 ) {
     Card(
         elevation = 10.dp,
@@ -77,7 +77,7 @@ fun DisplaySelectableCharactersWithError(
 }
 
 @Composable
-private fun DisplaySelectableCharacters(model: CharacterSelectorModel) {
+private fun DisplaySelectableCharacters(model: CharacterModel) {
     val characters: Iterable<Character> =
         model.getCharacters()
 
