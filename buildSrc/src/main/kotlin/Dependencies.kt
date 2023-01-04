@@ -11,6 +11,12 @@ object Versions{
     const val jvm = "11"
     const val icerockResources = "0.20.1"
     const val eventBus = "3.3.1"
+    object Koin{
+        const val core = "3.3.2"
+        const val android = "3.3.2"
+        const val androidCompose = "3.4.1"
+        const val ktor = "3.3.0"
+    }
 }
 
 object Namespaces{
@@ -23,6 +29,18 @@ object Dependencies{
     const val androidGradlePlugin = "com.android.tools.build:gradle:${Versions.Plugins.android}"
     const val kotlinGradlePlugin= "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.Plugins.kotlin}"
     const val eventBus = "org.greenrobot:eventbus:${Versions.eventBus}"
+    object Koin {
+        const val core = "io.insert-koin:koin-core:${Versions.Koin.core}"
+        const val test = "io.insert-koin:koin-test:${Versions.Koin.core}"
+        const val jUnit5 = "io.insert-koin:koin-test-junit5:${Versions.Koin.core}"
+        const val android = "io.insert-koin:koin-android:${Versions.Koin.android}"
+        const val androidCompat = "io.insert-koin:koin-android-compat:${Versions.Koin.android}"
+        const val androidWorkManager = "io.insert-koin:koin-androidx-workmanager:${Versions.Koin.android}"
+        const val androidNavigation = "io.insert-koin:koin-androidx-navigation:${Versions.Koin.android}"
+        const val androidCompose = "io.insert-koin:koin-androidx-compose:${Versions.Koin.androidCompose}"
+        const val ktor = "io.insert-koin:koin-ktor:${Versions.Koin.ktor}"
+        const val loggerSlf4j = "io.insert-koin:koin-logger-slf4j:${Versions.Koin.ktor}"
+    }
     object Compose{
         const val ui = "androidx.compose.ui:ui:${Versions.androidCompose}"
         const val uiGraphics = "androidx.compose.ui:ui-graphics:${Versions.androidCompose}"

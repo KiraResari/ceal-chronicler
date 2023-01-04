@@ -39,4 +39,6 @@ dependencies {
     implementation(Dependencies.Compose.foundation)
     implementation(Dependencies.Compose.material)
     implementation(Dependencies.activityCompose)
+    implementation(Dependencies.Koin.android)
+    implementation(Dependencies.Koin.androidCompose)
 }

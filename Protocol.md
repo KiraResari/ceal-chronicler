@@ -1302,7 +1302,27 @@
 
 
 
-NEXT: Dependency Injection
+# 4-Jan-2023
+
+* Now continuing with this
+* Today, I wanted to get started with Dependency Injection
+  * Chapter 9 of the `kmpf_materials` sample project deals with that
+  * And here's the respective scrambled article:
+    * https://www.kodeco.com/books/kotlin-multiplatform-by-tutorials/v1.0/chapters/9-dependency-injection
+    * Unfortunately, the scrambling begins too early for that article to be really useful, so let's see if I can figure it out based on the sample project
+  * So, apparently, it uses Koin, which is this:
+    * https://insert-koin.io/
+    * That led me to these interesting pages:
+      * https://insert-koin.io/docs/setup/annotations
+      * https://github.com/InsertKoinIO/hello-kmp/tree/annotations
+      * https://kotlinlang.org/docs/ksp-multiplatform.html#avoid-the-ksp-configuration-on-ksp-1-0-1
+    * I checked out the `hello-kmp` project
+      * Once again, this claims to be KMP, but is only KMM
+      * Looks like I'll have to slingshot my way through this using the `kmpf_materials` sample project
+
+
+
+
 
 
 

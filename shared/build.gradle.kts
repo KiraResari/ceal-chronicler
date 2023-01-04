@@ -26,11 +26,13 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(Dependencies.eventBus)
+                implementation(Dependencies.Koin.core)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(Dependencies.Koin.test)
             }
         }
         val androidMain by getting

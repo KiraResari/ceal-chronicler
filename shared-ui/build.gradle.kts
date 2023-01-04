@@ -37,6 +37,7 @@ kotlin {
             dependencies {
                 implementation(project(":shared"))
                 implementation(Dependencies.eventBus)
+                implementation(Dependencies.Koin.core)
 
                 api(compose.foundation)
                 api(compose.runtime)

@@ -19,6 +19,7 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             kotlin.srcDirs("src/jvmMain/kotlin")
+            resources.srcDirs("src/jvmMain/resources")
             dependencies {
                 implementation(compose.desktop.currentOs)
                 api(compose.runtime)
@@ -29,6 +30,7 @@ kotlin {
 
                 implementation(project(":shared"))
                 implementation(project(":shared-ui"))
+                implementation(Dependencies.Koin.core)
             }
         }
     }
