@@ -1,15 +1,16 @@
 package com.tri_tail.ceal_chronicler.main_view
 
+import com.tri_tail.ceal_chronicler.characters.*
 import com.tri_tail.ceal_chronicler.events.*
-import com.tri_tail.ceal_chronicler.main_view.state.*
+import com.tri_tail.ceal_chronicler.title_screen.TitleScreenViewData
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class MainViewModel {
 
-    var state: MainViewState = TitleScreenViewState()
+    var viewData: ViewData = TitleScreenViewData()
 
-    var onStateUpdate: ((MainViewState) -> Unit) = { }
+    var onStateUpdate: ((ViewData) -> Unit) = { }
 
     init {
         val eventBus = EventBus.getDefault()
@@ -18,13 +19,13 @@ class MainViewModel {
 
     @Subscribe
     fun onOpenCharacterSelectionViewEvent(event: OpenCharacterSelectionViewEvent) {
-        state = CharacterSelectionViewState()
-        onStateUpdate(state)
+        viewData = CharacterSelectionViewData()
+        onStateUpdate(viewData)
     }
 
     @Subscribe
     fun onSelectCharacterEvent(event: SelectCharacterEvent) {
-        state = CharacterViewState(event.character)
-        onStateUpdate(state)
+        viewData = CharacterViewData(event.character)
+        onStateUpdate(viewData)
     }
 }

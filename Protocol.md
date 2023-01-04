@@ -1378,6 +1378,12 @@
     * While I was doing this, I noticed it was the right thing to do, because my code instantly became more simple and it felt like a knot that had been there was being resolved
     * In fact, looking back, I could probably have avoided SO MANY problems had I done that from the start
 
+* This is as far as I'm getting with this today
+
+
+
+NEXT: Edit Characters & Persistence
+
 
 
 
