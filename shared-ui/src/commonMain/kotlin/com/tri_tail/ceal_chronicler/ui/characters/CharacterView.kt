@@ -38,12 +38,12 @@ fun DisplayCharacterView(character: Character) {
                 style = typography.h1
             )
             Text(
-                text = "Species: " + character.species,
+                text = "Species: " + character.speciesAsString,
                 style = typography.body1,
                 textAlign = TextAlign.Start
             )
             Text(
-                text = "Weapon: " + character.weapon,
+                text = "Weapon: " + character.weaponAsString,
                 style = typography.body1,
                 textAlign = TextAlign.Start
             )

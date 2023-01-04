@@ -1,12 +1,13 @@
 package com.tri_tail.ceal_chronicler.main_view
 
 import com.tri_tail.ceal_chronicler.events.OpenCharacterSelectionViewEvent
+import com.tri_tail.ceal_chronicler.main_view.state.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class MainViewModel {
 
-    var state = MainViewState.TITLE
+    var state: MainViewState = TitleScreenViewState()
 
     var onStateUpdate: ((MainViewState) -> Unit) = { }
 
@@ -17,7 +18,7 @@ class MainViewModel {
 
     @Subscribe
     fun onOpenCharacterSelectionViewEvent(event: OpenCharacterSelectionViewEvent) {
-        state = MainViewState.CHARACTER
+        state = CharacterSelectionViewState()
         onStateUpdate(state)
     }
 }

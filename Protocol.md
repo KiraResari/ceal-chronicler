@@ -1368,6 +1368,14 @@
 
   * With that, the basic character adding works
 
+* Now, I don't have much time left today, so I am going to dedicate the rest of the day to cleanup duty
+
+  * For one, the way in which the `CharacterSelectionView` takes care of displaying the relevant `CharacterView` bothers me
+    * I would much rather that the `MainView` be responsible of deciding which view to display, because then we have a clean separation of concerns:
+      * The `MainView` keeps track of which view is being displayed on screen
+      * The other views fire events to change the view, which the `MainViewModel` catches and updates the `MainView` accordingly
+    * I did consider having transparent overlays, but I think for the moment I'll stick with the paradigm that every view should be its own screen
+
 
 
 
