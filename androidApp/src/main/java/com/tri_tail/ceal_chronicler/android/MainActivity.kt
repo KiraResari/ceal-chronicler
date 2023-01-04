@@ -15,10 +15,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val koin = startKoin {
+        val koinApplication = startKoin {
             modules(KoinModules.models, KoinModules.repositories)
             androidLogger()
         }
+        val koin = koinApplication.koin
 
         setContent {
             MyApplicationTheme {

@@ -1333,8 +1333,6 @@
 
 
 
-
-
 # ⚓
 
 
@@ -1416,7 +1414,9 @@
 
 ## Dependency Injection
 
-* Not tested yet
+* Overall: Kinda good (+)
+* Uses Koin: https://insert-koin.io
+* (+) Works fine and without any trouble
 
 ## Persistence
 
