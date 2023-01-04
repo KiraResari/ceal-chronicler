@@ -1319,6 +1319,15 @@
     * I checked out the `hello-kmp` project
       * Once again, this claims to be KMP, but is only KMM
       * Looks like I'll have to slingshot my way through this using the `kmpf_materials` sample project
+      * At any rate, it will probably do for me to read out through this Koin tutorial first:
+        * https://insert-koin.io/docs/reference/introduction
+    * Okay, looks like I managed to get it running
+      * I now managed to get the `MainViewModel` from the context
+      * Now let's see if I can get the others from there too
+      * Yes, looks good!
+  * Looks like I managed to add dependency injection to all my _three_ different types of backend classes
+  * The only thing that's a bit annoying is that I have to pass the `koin` reference through everywhere, which is needed because the frontend doesn't use classes, so I can't have them inherit from `KoinComponent`
+    * I figure I could put it into a global variable, like how the `kmpfMaterials` sample project did it (at least I _think_ that's what's happening there...), but I have instead chosen to pass it through, because that makes it easy to understand where it comes from
 
 
 

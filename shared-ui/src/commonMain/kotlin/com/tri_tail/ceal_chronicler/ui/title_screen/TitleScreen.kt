@@ -1,4 +1,4 @@
-package com.tri_tail.ceal_chronicler.ui
+package com.tri_tail.ceal_chronicler.ui.title_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,7 +24,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import org.greenrobot.eventbus.EventBus
 
 @Composable
-fun TitleScreen() {
+fun DisplayTitleScreen() {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally

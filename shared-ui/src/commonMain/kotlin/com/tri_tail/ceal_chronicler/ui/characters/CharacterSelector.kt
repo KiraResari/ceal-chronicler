@@ -21,12 +21,13 @@ import com.tri_tail.ceal_chronicler.theme.primaryColor
 import com.tri_tail.ceal_chronicler.theme.primaryDarkColor
 import com.tri_tail.ceal_chronicler.theme.typography
 import org.greenrobot.eventbus.EventBus
+import org.koin.core.Koin
 import java.util.*
 
 @Composable
-fun DisplayCharacterSelector() {
-    val model: CharacterSelectorModel = remember { CharacterSelectorModel() }
-    val repository: CharacterRepository = remember { CharacterRepository() }
+fun DisplayCharacterSelector(koin: Koin) {
+    val model: CharacterSelectorModel = koin.get()
+    val repository: CharacterRepository = koin.get()
     val selectedCharacterId: MutableState<Optional<CharacterId>> =
         remember {
             mutableStateOf(
