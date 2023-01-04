@@ -1,60 +1,53 @@
 package com.tri_tail.ceal_chronicler.ui.characters
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.graphics.Color
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.dp
-import com.tri_tail.ceal_chronicler.characters.Character
-import com.tri_tail.ceal_chronicler.characters.CharacterId
-import com.tri_tail.ceal_chronicler.characters.CharacterModel
-import com.tri_tail.ceal_chronicler.events.SelectCharacterEvent
-import com.tri_tail.ceal_chronicler.theme.primaryColor
-import com.tri_tail.ceal_chronicler.theme.primaryDarkColor
-import com.tri_tail.ceal_chronicler.theme.typography
+import com.tri_tail.ceal_chronicler.characters.*
+import com.tri_tail.ceal_chronicler.events.*
+import com.tri_tail.ceal_chronicler.theme.*
 import org.greenrobot.eventbus.EventBus
 import org.koin.core.Koin
 import java.util.*
 
 @Composable
-fun DisplayCharacterSelector(koin: Koin) {
+fun DisplayCharacterSelectionView(koin: Koin) {
     val model: CharacterModel = koin.get()
-    val selectedCharacterId: MutableState<Optional<CharacterId>> =
-        remember {
-            mutableStateOf(
-                model.selectedCharacter
-            )
-        }
-
-    model.onSelectedCharacterUpdate = {
-        selectedCharacterId.value = it
+    var selectedCharacterId: Optional<CharacterId> by remember {
+        mutableStateOf(
+            model.selectedCharacter
+        )
     }
 
-    if (selectedCharacterId.value.isPresent) {
-        val selectedCharacterIdValue = selectedCharacterId.value.get()
+    model.onSelectedCharacterUpdate = {
+        selectedCharacterId = it
+    }
+
+    if (selectedCharacterId.isPresent) {
+        val selectedCharacterIdValue = selectedCharacterId.get()
         val character = model.get(selectedCharacterIdValue)
         if (character.isPresent) {
-            DisplayCharacterScreen(character.get())
+            DisplayCharacterView(character.get())
         } else {
-            DisplaySelectableCharactersWithError(
+            DisplayMainContentColumnWithError(
                 "Could not find character with ID: $selectedCharacterIdValue",
                 model
             )
         }
     } else {
-        DisplaySelectableCharacters(model)
+        DisplayMainContentColumn(model)
     }
 }
 
 @Composable
-fun DisplaySelectableCharactersWithError(
+fun DisplayMainContentColumnWithError(
     errorMessage: String,
     model: CharacterModel
 ) {
@@ -71,15 +64,13 @@ fun DisplaySelectableCharactersWithError(
                 text = errorMessage,
                 style = typography.h2
             )
-            DisplaySelectableCharacters(model)
+            DisplayMainContentColumn(model)
         }
     }
 }
 
 @Composable
-private fun DisplaySelectableCharacters(model: CharacterModel) {
-    val characters: Iterable<Character> =
-        model.getCharacters()
+private fun DisplayMainContentColumn(model: CharacterModel) {
 
     Card(
         elevation = 10.dp,
@@ -101,10 +92,27 @@ private fun DisplaySelectableCharacters(model: CharacterModel) {
                 text = "Select a character:",
                 style = typography.h2
             )
-            for (character in characters) {
-                DisplayCharacterButton(character)
-            }
+            DisplayAvailableCharacters(model)
+            DisplayAddCharacterButton()
         }
+    }
+}
+
+@Composable
+private fun DisplayAvailableCharacters(model: CharacterModel) {
+    var availableCharacters: Iterable<Character> by remember {
+        mutableStateOf(
+            model.getCharacters(),
+            policy = neverEqualPolicy()
+        )
+    }
+
+    model.onAvailableCharactersUpdate = {
+        availableCharacters = it
+    }
+
+    for (character in availableCharacters) {
+        DisplayCharacterButton(character)
     }
 }
 
@@ -116,11 +124,30 @@ private fun DisplayCharacterButton(
         onClick = { clickCharacterButton(character.id) },
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
     ) {
-        Text(text = character.name)
+        Text(text = character.nameAsString)
     }
 }
 
 private fun clickCharacterButton(characterId: CharacterId) {
     val eventBus = EventBus.getDefault()
     eventBus.post(SelectCharacterEvent(characterId))
+}
+
+@Composable
+fun DisplayAddCharacterButton() {
+    Button(
+        onClick = {
+            clickAddCharacterButton()
+        }
+    ) {
+        Icon(
+            Icons.Filled.Add,
+            contentDescription = "Add Character",
+        )
+    }
+}
+
+private fun clickAddCharacterButton() {
+    val eventBus = EventBus.getDefault()
+    eventBus.post(AddCharacterEvent(Character()))
 }

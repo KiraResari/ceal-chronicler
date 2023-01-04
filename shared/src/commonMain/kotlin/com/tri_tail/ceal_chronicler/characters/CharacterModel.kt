@@ -1,7 +1,6 @@
 package com.tri_tail.ceal_chronicler.characters
 
-import com.tri_tail.ceal_chronicler.events.DeselectCharacterEvent
-import com.tri_tail.ceal_chronicler.events.SelectCharacterEvent
+import com.tri_tail.ceal_chronicler.events.*
 import com.tri_tail.ceal_chronicler.items.Weapon
 import java.util.*
 import org.greenrobot.eventbus.EventBus
@@ -11,6 +10,7 @@ class CharacterModel(private val repository: CharacterRepository) {
     var selectedCharacter: Optional<CharacterId> = Optional.empty()
 
     var onSelectedCharacterUpdate: ((Optional<CharacterId>) -> Unit) = { }
+    var onAvailableCharactersUpdate: ((Iterable<Character>) -> Unit) = { }
 
     init {
         val eventBus = EventBus.getDefault()
@@ -27,6 +27,12 @@ class CharacterModel(private val repository: CharacterRepository) {
     fun onDeselectCharacterEvent(event: DeselectCharacterEvent) {
         selectedCharacter = Optional.empty()
         onSelectedCharacterUpdate(selectedCharacter)
+    }
+
+    @Subscribe
+    fun onAddCharacterEvent(event: AddCharacterEvent){
+        repository.add(event.character)
+        onAvailableCharactersUpdate(repository.getCharacters())
     }
 
     fun get(characterId: CharacterId): Optional<Character> {

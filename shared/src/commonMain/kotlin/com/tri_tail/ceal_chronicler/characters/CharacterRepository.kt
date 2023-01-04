@@ -8,7 +8,13 @@ class CharacterRepository {
     private val characters = HashMap<CharacterId, Character>();
 
     init {
-        add(Character())
+        add(
+            Character(
+                name = CharacterName("Sylvia Zerin"),
+                species = Species("Nefilim"),
+                weapon = Weapon("Axe")
+            )
+        )
         add(
             Character(
                 name = CharacterName("Idra Kegis"),

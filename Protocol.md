@@ -1305,7 +1305,9 @@
 # 4-Jan-2023
 
 * Now continuing with this
+
 * Today, I wanted to get started with Dependency Injection
+
   * Chapter 9 of the `kmpf_materials` sample project deals with that
   * And here's the respective scrambled article:
     * https://www.kodeco.com/books/kotlin-multiplatform-by-tutorials/v1.0/chapters/9-dependency-injection
@@ -1328,10 +1330,43 @@
   * Looks like I managed to add dependency injection to all my _three_ different types of backend classes
   * The only thing that's a bit annoying is that I have to pass the `koin` reference through everywhere, which is needed because the frontend doesn't use classes, so I can't have them inherit from `KoinComponent`
     * I figure I could put it into a global variable, like how the `kmpfMaterials` sample project did it (at least I _think_ that's what's happening there...), but I have instead chosen to pass it through, because that makes it easy to understand where it comes from
+
 * Next, I want to get to actually manipulating the data, such as adding a character and editing their data
+
   * This will also be a good chance to integrate some tests, as well as see how Koin works with tests
+
     * I note with regret that Android Studio does not have what is one of my favorite functions from Eclipse, namly creating a test class for a class by right-clicking on it
     * I'll instead copycat from the `kmpf-materials` instead
+    * I now managed to get a running and passing test for this without much trouble
+
+  * Next, to add the functionality to add a character via the UI
+
+    * For the first step, I want to keep it simple and just add a new character with the default empty values
+
+    * Well, I basically got it to work, only it doesn't update the UI yet when I add a new character
+
+      * Why?
+
+      * The `KMPF Materials` sample does something with `LazyColumn`, but I tried, and that does not work for me because it says:
+
+        * ````
+          @Composable invocations can only happen from the context of a @Composable function
+          ````
+
+        * That makes no sense whatsoever, because I checked and `LazyColumn` is perfectly `@Composable`
+
+      * Okay, I now managed to get it to work by adding `policy = neverEqualPolicy()` to the following:
+
+        * ````kotlin
+                      var availableCharacters: Iterable<Character> by remember {
+                          mutableStateOf(
+                              model.getCharacters(),
+                              policy = neverEqualPolicy()
+                          )
+                      }
+          ````
+
+  * With that, the basic character adding works
 
 
 
