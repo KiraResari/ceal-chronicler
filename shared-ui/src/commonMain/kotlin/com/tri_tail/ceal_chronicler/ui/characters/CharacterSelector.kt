@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.tri_tail.ceal_chronicler.characters.Character
 import com.tri_tail.ceal_chronicler.characters.CharacterId
-import com.tri_tail.ceal_chronicler.characters.CharacterRepository
 import com.tri_tail.ceal_chronicler.characters.CharacterSelectorModel
 import com.tri_tail.ceal_chronicler.events.SelectCharacterEvent
 import com.tri_tail.ceal_chronicler.theme.primaryColor
@@ -27,7 +26,6 @@ import java.util.*
 @Composable
 fun DisplayCharacterSelector(koin: Koin) {
     val model: CharacterSelectorModel = koin.get()
-    val repository: CharacterRepository = koin.get()
     val selectedCharacterId: MutableState<Optional<CharacterId>> =
         remember {
             mutableStateOf(
@@ -40,25 +38,25 @@ fun DisplayCharacterSelector(koin: Koin) {
     }
 
     if (selectedCharacterId.value.isPresent) {
-        val selectedCharacterIdValue = selectedCharacterId.value.get();
-        val character = repository.get(selectedCharacterIdValue)
+        val selectedCharacterIdValue = selectedCharacterId.value.get()
+        val character = model.get(selectedCharacterIdValue)
         if (character.isPresent) {
             DisplayCharacterScreen(character.get())
         } else {
             DisplaySelectableCharactersWithError(
-                "Could not find character with ID: " + selectedCharacterIdValue,
-                repository
+                "Could not find character with ID: $selectedCharacterIdValue",
+                model
             )
         }
     } else {
-        DisplaySelectableCharacters(repository)
+        DisplaySelectableCharacters(model)
     }
 }
 
 @Composable
 fun DisplaySelectableCharactersWithError(
     errorMessage: String,
-    repository: CharacterRepository
+    model: CharacterSelectorModel
 ) {
     Card(
         elevation = 10.dp,
@@ -73,15 +71,15 @@ fun DisplaySelectableCharactersWithError(
                 text = errorMessage,
                 style = typography.h2
             )
-            DisplaySelectableCharacters(repository)
+            DisplaySelectableCharacters(model)
         }
     }
 }
 
 @Composable
-private fun DisplaySelectableCharacters(repository: CharacterRepository) {
+private fun DisplaySelectableCharacters(model: CharacterSelectorModel) {
     val characters: Iterable<Character> =
-        repository.getCharacters();
+        model.getCharacters()
 
     Card(
         elevation = 10.dp,

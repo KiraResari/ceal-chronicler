@@ -6,7 +6,7 @@ import java.util.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class CharacterSelectorModel {
+class CharacterSelectorModel(val repository: CharacterRepository) {
     var selectedCharacter: Optional<CharacterId> = Optional.empty()
 
     var onSelectedCharacterUpdate: ((Optional<CharacterId>) -> Unit) = { }
@@ -26,5 +26,13 @@ class CharacterSelectorModel {
     fun onDeselectCharacterEvent(event: DeselectCharacterEvent){
         selectedCharacter = Optional.empty()
         onSelectedCharacterUpdate(selectedCharacter)
+    }
+
+    fun get(characterId: CharacterId): Optional<Character> {
+        return repository.get(characterId)
+    }
+
+    fun getCharacters(): Iterable<Character> {
+        return repository.getCharacters()
     }
 }
