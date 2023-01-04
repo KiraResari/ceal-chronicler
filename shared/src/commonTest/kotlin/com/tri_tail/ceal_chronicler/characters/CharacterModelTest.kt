@@ -24,12 +24,13 @@ class CharacterModelTest : KoinTest {
     @Test
     fun addCharacterShouldIncreaseCharacterCountByOne() {
         val characterCountBeforeAdding = model.getCharacters().count()
-
-        model.addCharacter(
-            CharacterName("Cyrus"),
-            Species("Wel"),
-            Weapon("Bardiche")
+        val testCharacter = Character(
+            name = CharacterName("Cyrus"),
+            species = Species("Wel"),
+            weapon = Weapon("Bardiche")
         )
+
+        model.addCharacter(testCharacter)
 
         val characterCountAfterAdding = model.getCharacters().count()
         assertEquals(

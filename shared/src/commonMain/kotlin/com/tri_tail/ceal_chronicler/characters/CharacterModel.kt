@@ -37,16 +37,7 @@ class CharacterModel(private val repository: CharacterRepository) {
         return repository.getCharacters()
     }
 
-    fun addCharacter(
-        characterName: CharacterName,
-        species: Species,
-        weapon: Weapon
-    ) {
-        val character = Character(
-            name = characterName,
-            species = species,
-            weapon = weapon
-        )
+    fun addCharacter(character: Character) {
         repository.add(character)
     }
 }
