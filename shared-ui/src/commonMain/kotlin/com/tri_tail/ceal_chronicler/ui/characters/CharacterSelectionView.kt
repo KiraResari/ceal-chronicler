@@ -20,53 +20,7 @@ import java.util.*
 @Composable
 fun DisplayCharacterSelectionView(koin: Koin) {
     val model: CharacterModel = koin.get()
-    var selectedCharacterId: Optional<CharacterId> by remember {
-        mutableStateOf(
-            model.selectedCharacter
-        )
-    }
-
-    model.onSelectedCharacterUpdate = {
-        selectedCharacterId = it
-    }
-
-    if (selectedCharacterId.isPresent) {
-        val selectedCharacterIdValue = selectedCharacterId.get()
-        val character = model.get(selectedCharacterIdValue)
-        if (character.isPresent) {
-            DisplayCharacterView(character.get())
-        } else {
-            DisplayMainContentColumnWithError(
-                "Could not find character with ID: $selectedCharacterIdValue",
-                model
-            )
-        }
-    } else {
-        DisplayMainContentColumn(model)
-    }
-}
-
-@Composable
-fun DisplayMainContentColumnWithError(
-    errorMessage: String,
-    model: CharacterModel
-) {
-    Card(
-        elevation = 10.dp,
-        modifier = Modifier.padding(15.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .background(Color.Red)
-                .padding(15.dp)
-        ) {
-            Text(
-                text = errorMessage,
-                style = typography.h2
-            )
-            DisplayMainContentColumn(model)
-        }
-    }
+    DisplayMainContentColumn(model)
 }
 
 @Composable
@@ -121,16 +75,16 @@ private fun DisplayCharacterButton(
     character: Character
 ) {
     Button(
-        onClick = { clickCharacterButton(character.id) },
+        onClick = { clickCharacterButton(character) },
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
     ) {
         Text(text = character.nameAsString)
     }
 }
 
-private fun clickCharacterButton(characterId: CharacterId) {
+private fun clickCharacterButton(character: Character) {
     val eventBus = EventBus.getDefault()
-    eventBus.post(SelectCharacterEvent(characterId))
+    eventBus.post(SelectCharacterEvent(character))
 }
 
 @Composable

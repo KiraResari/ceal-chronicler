@@ -1375,6 +1375,8 @@
       * The `MainView` keeps track of which view is being displayed on screen
       * The other views fire events to change the view, which the `MainViewModel` catches and updates the `MainView` accordingly
     * I did consider having transparent overlays, but I think for the moment I'll stick with the paradigm that every view should be its own screen
+    * While I was doing this, I noticed it was the right thing to do, because my code instantly became more simple and it felt like a knot that had been there was being resolved
+    * In fact, looking back, I could probably have avoided SO MANY problems had I done that from the start
 
 
 

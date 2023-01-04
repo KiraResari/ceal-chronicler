@@ -8,8 +8,8 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.tri_tail.ceal_chronicler.characters.Character
-import com.tri_tail.ceal_chronicler.events.DeselectCharacterEvent
+import com.tri_tail.ceal_chronicler.characters.*
+import com.tri_tail.ceal_chronicler.events.OpenCharacterSelectionViewEvent
 import com.tri_tail.ceal_chronicler.theme.*
 import org.greenrobot.eventbus.EventBus
 
@@ -59,5 +59,5 @@ fun DisplayCharacterView(character: Character) {
 
 private fun clickBackButton() {
     val eventBus = EventBus.getDefault()
-    eventBus.post(DeselectCharacterEvent())
+    eventBus.post(OpenCharacterSelectionViewEvent())
 }

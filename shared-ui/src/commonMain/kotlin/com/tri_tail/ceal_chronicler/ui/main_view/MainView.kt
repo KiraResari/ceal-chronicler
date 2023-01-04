@@ -7,8 +7,8 @@ import org.koin.core.Koin
 import com.tri_tail.ceal_chronicler.main_view.MainViewModel
 import com.tri_tail.ceal_chronicler.main_view.state.*
 import com.tri_tail.ceal_chronicler.theme.AppTheme
+import com.tri_tail.ceal_chronicler.ui.characters.*
 import com.tri_tail.ceal_chronicler.ui.title_screen.DisplayTitleScreen
-import com.tri_tail.ceal_chronicler.ui.characters.DisplayCharacterSelectionView
 
 @Composable
 fun DisplayMainView(koin: Koin) {
@@ -27,9 +27,11 @@ fun DisplayMainView(koin: Koin) {
     }
 
     AppTheme {
-        when (state) {
+        when (val localState = state) {
             is TitleScreenViewState -> DisplayTitleScreen()
             is CharacterSelectionViewState -> DisplayCharacterSelectionView(koin)
+            is CharacterViewState -> DisplayCharacterView(localState.character)
+            else -> throw NotImplementedError("MainView does not know how to handle state: $localState")
         }
     }
 }

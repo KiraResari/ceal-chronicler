@@ -18,18 +18,6 @@ class CharacterModel(private val repository: CharacterRepository) {
     }
 
     @Subscribe
-    fun onSelectCharacterEvent(event: SelectCharacterEvent) {
-        selectedCharacter = Optional.of(event.characterId)
-        onSelectedCharacterUpdate(selectedCharacter)
-    }
-
-    @Subscribe
-    fun onDeselectCharacterEvent(event: DeselectCharacterEvent) {
-        selectedCharacter = Optional.empty()
-        onSelectedCharacterUpdate(selectedCharacter)
-    }
-
-    @Subscribe
     fun onAddCharacterEvent(event: AddCharacterEvent){
         repository.add(event.character)
         onAvailableCharactersUpdate(repository.getCharacters())
