@@ -1476,7 +1476,67 @@
 
   * Now, I notice that how I did it, the changes already get saved during the session, which is not something that I want
 
-    * Rather, I want a "save changes" and a "cancel option"
+    * Rather, I want a "save changes" and a "cancel" option
+
+    * While doing that, I came across the particularly frustrating thing that this only works when I save each display value as an independent `remember` variable, and can't bundle them together, because then it stops working, which is a Clean Code violation
+
+      * Specifically, this is how to do it for it to work:
+
+        * ````kotlin
+              var nameDisplayValue by remember { mutableStateOf(character.nameAsString) }
+          [...]
+                      TextField(
+                          label = { Text(text = "Name:") },
+                          value = nameDisplayValue,
+                          onValueChange = { nameDisplayValue = it },
+                          [...]
+                          )
+                      )
+          ````
+
+      * Meanwhile, this does not work:
+
+        * ````kotlin
+              var characterState by remember { mutableStateOf(character) }
+          [...]
+                      TextField(
+                          label = { Text(text = "Name:") },
+                          value = character.nameAsString,
+                          onValueChange = { character.nameAsString = it },
+                          [...]
+                      )
+          ````
+
+      * So, instead of just passing the `character` and the `characterState` around, I have to pass everything around, which seems suboptimal, and yet I can't figure out a better way
+
+    * Anyway, I now tried to get this to work by creating a `CharacterModel` that takes the selected `Character` as an injected parameter as described here:
+
+      * https://insert-koin.io/docs/reference/koin-core/injection-parameters
+
+      * https://insert-koin.io/docs/reference/koin-core/dsl-update#injected-parameters
+
+      * This was my attempt:
+
+        * ````kotlin
+          @Composable
+          fun DisplayCharacterView(character: Character, koin: Koin) {
+              val model = koin.get<CharacterModel> { parametersOf(character) }
+          ````
+
+        * ````kotlin
+          class CharacterModel(var character: Character) {
+          ````
+
+      * That compiled without problems. However, as soon as I opened the character view, I got this exciting and expressive error message:
+
+        * ````
+          Exception in thread "AWT-EventQueue-0" java.lang.NoSuchMethodError: 'void com.tri_tail.ceal_chronicler.ui.characters.CharacterViewKt.DisplayCharacterView(com.tri_tail.ceal_chronicler.characters.Character, androidx.compose.runtime.Composer, int)'
+          [...]
+          ````
+
+      * Okay, so it turns out that I forgot to add the `koin` parameter to the call of `DisplayCharacterSelectionView`, and for some strange reason the IDE did not throw me a compile time error about that...
+
+      * After I fixed that, resetting now works
 
 
 
@@ -1494,12 +1554,13 @@
 
 ## Framework
 
-* Overall: Extremely Bad (-----)
+* Overall: Extremely Bad (----)
 * Kotlin Multiplatform
 * (+) Data classes
   * ...they don't allow for inheritance though
 
 * (+) Enforces when-statements (switch/case) to be exhaustive
+* (+) Auto-Generated `TODO` function throws `NotImplementedException` if code runs into it during execution 
 * (-) Events are not as straightforward as they should be
 * (-) Kotlin Multiplatform does not really implement object-oriented programming, which causes problems (for example with events)
 * (--) Kotlin requires classes to be explicitly open to extension, which violates the OCP
@@ -1518,6 +1579,7 @@
   * That is, the IDE claims that references can't be resolved and half the lines are red, but at runtime everything works fine
   * And then, auto-complete and auto-import naturally no longer works
   * Also, at times it does not display errors that are clearly there, leaving you to guess what went wrong when the app inevitably crashes on compile
+    * For example: When adding a parameter to a function signature, but not to the function call, the app might still compile without an error, but as soon as that function is then called, it crashes
 * (-) Sometimes does not offer certain options like "New > Package" in some projects, forcing you to add folders manually if it auto-collapsed a chain of folders - like "models.main_view" - and you can't add a folder below "models" in the IDE anymore
 * (-) Asks every day if you want to add new files to git, even if you check "Don't ask again" 
 

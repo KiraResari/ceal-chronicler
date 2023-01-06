@@ -2,7 +2,6 @@ package com.tri_tail.ceal_chronicler.ui.characters
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -15,16 +14,15 @@ import com.tri_tail.ceal_chronicler.events.*
 import com.tri_tail.ceal_chronicler.theme.*
 import org.greenrobot.eventbus.EventBus
 import org.koin.core.Koin
-import java.util.*
 
 @Composable
 fun DisplayCharacterSelectionView(koin: Koin) {
-    val model: CharacterModel = koin.get()
+    val model: CharacterSelectionModel = koin.get()
     DisplayMainContentColumn(model)
 }
 
 @Composable
-private fun DisplayMainContentColumn(model: CharacterModel) {
+private fun DisplayMainContentColumn(model: CharacterSelectionModel) {
 
     Card(
         elevation = 10.dp,
@@ -53,7 +51,7 @@ private fun DisplayMainContentColumn(model: CharacterModel) {
 }
 
 @Composable
-private fun DisplayAvailableCharacters(model: CharacterModel) {
+private fun DisplayAvailableCharacters(model: CharacterSelectionModel) {
     var availableCharacters: Iterable<Character> by remember {
         mutableStateOf(
             model.getCharacters(),

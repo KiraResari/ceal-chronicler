@@ -13,3 +13,5 @@ val darkTextColor = Color(0xFF0f0f0f)
 val towerGray = Color(0xFFA9BDBF)
 
 val textFieldBackgroundColor = Color(0xFFFFFFFF)
+val cancelButtonColor = Color.Red
+val confirmButtonColor = Color.Green

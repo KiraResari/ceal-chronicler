@@ -7,8 +7,9 @@ import com.tri_tail.ceal_chronicler.main_view.*
 
 object KoinModules {
     val models = module {
-        singleOf(::CharacterModel)
+        singleOf(::CharacterSelectionModel)
         singleOf(::MainViewModel)
+        singleOf(::CharacterModel)
     }
     val repositories = module {
         singleOf(::CharacterRepository)

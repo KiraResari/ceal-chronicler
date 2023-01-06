@@ -1,6 +1,5 @@
 package com.tri_tail.ceal_chronicler.characters
 
-import com.tri_tail.ceal_chronicler.items.Weapon
 import com.tri_tail.ceal_chronicler.koin.KoinModules
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -11,7 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CharacterModelTest : KoinTest {
-    private val model: CharacterModel by inject()
+    private val model: CharacterSelectionModel by inject()
 
     @BeforeTest
     fun setup() {

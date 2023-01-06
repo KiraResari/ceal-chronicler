@@ -31,7 +31,7 @@ fun DisplayMainView(koin: Koin) {
         when (val localViewData = viewData) {
             is TitleScreenViewData -> DisplayTitleScreen()
             is CharacterSelectionViewData -> DisplayCharacterSelectionView(koin)
-            is CharacterViewData -> DisplayCharacterView(localViewData.character)
+            is CharacterViewData -> DisplayCharacterView(localViewData.character, koin)
             else -> throw NotImplementedError("MainView does not know how to handle state: $localViewData")
         }
     }
