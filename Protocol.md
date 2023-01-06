@@ -1382,7 +1382,105 @@
 
 
 
-NEXT: Edit Characters & Persistence
+# 6-Jan-2023
+
+* Now, continuing with this
+
+* Today, I want to look into editing characters and persisting these changes
+
+  * Chapter 10 of the `kMpFmAtErIaLs` deals with that
+  * And here's the respective scrambled article: https://www.kodeco.com/books/kotlin-multiplatform-by-tutorials/v1.0/chapters/10-data-persistence
+    * Again, the scrambling begins too early to take away much worthwhile information, so I'll just look at the sample project instead
+    * Looking at that, I don't think there's much I can use there, since this one is mostly about storing data in a database, which I don't want
+  * I'd like to store data in a file, which I can then easily transfer between devices
+    * On a computer, that should be easy, but on Android it might be more complicated
+
+  *  Anyway, before I get lost there, let's first focus on making changes, and then on saving them
+
+  * I tried using this for being able to enter the text:
+
+    * https://foso.github.io/Jetpack-Compose-Playground/cookbook/textfield_changes/
+
+    * But somehow, that just messes up my format, and while I can now mark "Dragon" in Idra's character view, I can't change it
+
+    * I bet that's an issue related to that weird `remember` mess again =>,<=
+
+    * I note that the cursor moves when I press letter keys or backspace, though no change occurs
+
+    * Here's my attempt:
+
+      * 
+
+      * ```kotlin
+        TextField(
+            value = character.speciesAsString,
+            onValueChange = {character.species.name = it},
+            textStyle = typography.body1
+        )
+        ```
+
+    * Okay, I debugged this, and I note that the the `onValueChange` lambda is being called, and the species name is being changed as expected, but somehow those changes are not being reflected in the UI
+
+      * Curiously, when I make other changes, I can see that the value of `character.species` from the previous iteration is present, but the next iteration overwrites it again
+
+    * Okay, I now managed to get it to work like this, which feels a bit cheathy, but as long as it works:
+
+      * ````kotlin
+            var speciesDisplayValue by remember { mutableStateOf(character.speciesAsString) }
+            [...]
+                        TextField(
+                            value = speciesDisplayValue,
+                            onValueChange = {
+                                character.species.name = it
+                                speciesDisplayValue = it
+                            },
+                            textStyle = typography.body1
+                        )
+        ````
+
+    * Next to figure out what's the deal with the format here
+
+      * I used this format:
+
+        * ````kotlin
+                      Row {
+                          Text(
+                              text = "Species:",
+                              style = typography.body1,
+                              textAlign = TextAlign.End
+                          )
+                          TextField(
+                              value = speciesDisplayValue,
+                              onValueChange = {
+                                  character.species.name = it
+                                  speciesDisplayValue = it
+                              },
+                              textStyle = typography.body1
+                          )
+                      }
+          ````
+
+      * My intend is that I have one row with the label "Species:" to the left, being right-aligned, and the text field to the right of that
+
+      * Instead, what I get is something like this:
+
+        * ````
+          Species:
+                     Dragon
+                  _________________________
+          ````
+
+      * On closer inspection, it would seem that the text field is simply vertically about three lines big
+
+      * Anyway, I now arrived at something that will do for now
+
+  * Now, I notice that how I did it, the changes already get saved during the session, which is not something that I want
+
+    * Rather, I want a "save changes" and a "cancel option"
+
+
+
+
 
 
 
@@ -1392,41 +1490,12 @@ NEXT: Edit Characters & Persistence
 
 
 
-# Kotlin Multiplatform Pros & Cons
-
-## Pros
-
-* You can use Kotlin Compose to create frontends that will work on both Android and Desktop, including iOS Desktop
-  * For iOS Mobile, you need frontend code written in Swift though (as far as I can tell)
-
-## Cons
-
-* Long build times
-  * 10-minute waits on project sync-ups
-  * 2-minute wait on daily start-up
-  * Regular wait times during project builds and gradle refreshes
-
-* I'm having considerable trouble even just with the Tutorials, which makes me not at all optimisitic about building an actual production app with this
-* Setting up a project seems overly complicated
-  * Regularly getting project configuration issues, such as modules not being recognized as such, and it apparently is impossible to tell the IDE that a folder is a module
-
-* Large file sizes (129 MB for a program that barely does anything)
-
-* Multiplatform support for resources is not natively implemented
-
-## Notable things that don't work
-
-* Images
-* Previews
-
-
-
 # Benchmarks
 
-## Language
+## Framework
 
-* Overall: Bad (--)
-* Kotlin
+* Overall: Extremely Bad (-----)
+* Kotlin Multiplatform
 * (+) Data classes
   * ...they don't allow for inheritance though
 
@@ -1434,6 +1503,8 @@ NEXT: Edit Characters & Persistence
 * (-) Events are not as straightforward as they should be
 * (-) Kotlin Multiplatform does not really implement object-oriented programming, which causes problems (for example with events)
 * (--) Kotlin requires classes to be explicitly open to extension, which violates the OCP
+* (-) The `remember` state logic is an intransparent mess that is complicated to get right
+* (--) Requires views to be functions instead of classes
 
 ## IDE
 

@@ -9,7 +9,7 @@ data class Character(
     var species: Species = Species("Species not set"),
     var weapon: Weapon = Weapon("Weapon not set")
 ) {
-    val nameAsString = name.name
-    val speciesAsString = species.name
-    val weaponAsString = weapon.name
+    var nameAsString = name.name
+    var speciesAsString = species.name
+    var weaponAsString = weapon.name
 }

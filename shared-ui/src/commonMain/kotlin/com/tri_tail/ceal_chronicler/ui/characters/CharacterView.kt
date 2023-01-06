@@ -3,7 +3,7 @@ package com.tri_tail.ceal_chronicler.ui.characters
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.style.TextAlign
@@ -15,6 +15,12 @@ import org.greenrobot.eventbus.EventBus
 
 @Composable
 fun DisplayCharacterView(character: Character) {
+    var nameDisplayValue
+            by remember { mutableStateOf(character.nameAsString) }
+    var speciesDisplayValue
+            by remember { mutableStateOf(character.speciesAsString) }
+    var weaponDisplayValue
+            by remember { mutableStateOf(character.weaponAsString) }
     Card(
         elevation = 10.dp,
         modifier = Modifier.padding(15.dp)
@@ -34,18 +40,44 @@ fun DisplayCharacterView(character: Character) {
                 .padding(15.dp)
         ) {
             Text(
-                text = character.nameAsString,
+                text = nameDisplayValue,
                 style = typography.h1
             )
-            Text(
-                text = "Species: " + character.speciesAsString,
-                style = typography.body1,
-                textAlign = TextAlign.Start
+            TextField(
+                label = { Text(text = "Name:") },
+                value = nameDisplayValue,
+                onValueChange = {
+                    character.nameAsString = it
+                    nameDisplayValue = it
+                },
+                textStyle = typography.body1,
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = textFieldBackgroundColor
+                )
             )
-            Text(
-                text = "Weapon: " + character.weaponAsString,
-                style = typography.body1,
-                textAlign = TextAlign.Start
+            TextField(
+                label = { Text(text = "Species:") },
+                value = speciesDisplayValue,
+                onValueChange = {
+                    character.speciesAsString = it
+                    speciesDisplayValue = it
+                },
+                textStyle = typography.body1,
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = textFieldBackgroundColor
+                )
+            )
+            TextField(
+                label = { Text(text = "Weapon:") },
+                value = weaponDisplayValue,
+                onValueChange = {
+                    character.weaponAsString = it
+                    weaponDisplayValue = it
+                },
+                textStyle = typography.body1,
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = textFieldBackgroundColor
+                )
             )
             Button(
                 onClick = { clickBackButton() },
