@@ -18,7 +18,7 @@ class CharacterModelTest : KoinTestBase() {
 
     @Test
     fun setCharacterNameShouldNotChangeCharacterNameInRepository() {
-        val characterId = repositoryTestUtilities.addDummyCharacter()
+        val characterId = repositoryTestUtilities.addCharacter(TestCharacter.build())
         val oldCharacterName = repositoryTestUtilities.getCharacterName(characterId)
         val model = testUtilities.prepareModelForCharacter(characterId)
 
@@ -30,7 +30,7 @@ class CharacterModelTest : KoinTestBase() {
 
     @Test
     fun savingChangedCharacterNameShouldChangeItInRepository(){
-        val characterId = repositoryTestUtilities.addDummyCharacter()
+        val characterId = repositoryTestUtilities.addCharacter(TestCharacter.build())
         val model = testUtilities.prepareModelForCharacter(characterId)
         val changedCharacterName = "Changed Character Name"
 
@@ -39,6 +39,18 @@ class CharacterModelTest : KoinTestBase() {
 
         var repositoryCharacterName = repositoryTestUtilities.getCharacterName(characterId)
         assertEquals(changedCharacterName, repositoryCharacterName)
+    }
+
+    @Test
+    fun resetCharacterShouldRestoreOriginalCharacterValues(){
+        val characterId = repositoryTestUtilities.addCharacter(TestCharacter.build())
+        val model = testUtilities.prepareModelForCharacter(characterId)
+
+        model.setCharacterName("Changed Character Name")
+        model.resetCharacter()
+
+        var character = model.viewData.character
+        assertEquals(TestCharacter.DEFAULT_CHARACTER_NAME, character.nameAsString)
     }
 
     @AfterTest

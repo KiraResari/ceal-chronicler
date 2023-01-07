@@ -53,7 +53,7 @@ class CharacterRepositoryTest : KoinTestBase() {
         val retrievedCharacter = testUtilities.getCharacterFromRepository(originalCharacter.id)
         retrievedCharacter.nameAsString = "Changed Name"
 
-        assertEquals(TestCharacter.TEST_CHARACTER_NAME, originalCharacter.nameAsString)
+        assertEquals(TestCharacter.DEFAULT_CHARACTER_NAME, originalCharacter.nameAsString)
     }
 
     @Test
@@ -64,7 +64,7 @@ class CharacterRepositoryTest : KoinTestBase() {
         originalCharacter.nameAsString = "Changed Name"
         val retrievedCharacter = testUtilities.getCharacterFromRepository(originalCharacter.id)
 
-        assertEquals(TestCharacter.TEST_CHARACTER_NAME, retrievedCharacter.nameAsString)
+        assertEquals(TestCharacter.DEFAULT_CHARACTER_NAME, retrievedCharacter.nameAsString)
     }
 
 

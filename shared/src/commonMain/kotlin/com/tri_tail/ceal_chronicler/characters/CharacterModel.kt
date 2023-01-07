@@ -9,14 +9,13 @@ class CharacterModel(
     private val repository: CharacterRepository
 ) : BaseModel() {
 
-    var originalCharacter = viewData.getCopyOfCharacter()
+    var originalCharacter = viewData.getDeepCopyOfCharacter()
 
     var onViewDataChanged: ((Character) -> Unit) = {}
 
     @Subscribe
     fun onResetCharacterInputEvent(event: ResetCharacterInputEvent) {
-        viewData = CharacterViewData(originalCharacter)
-        onViewDataChanged(viewData.character)
+        resetCharacter()
     }
 
     @Subscribe
@@ -24,9 +23,14 @@ class CharacterModel(
         saveCharacter()
     }
 
+    fun resetCharacter() {
+        viewData = CharacterViewData(originalCharacter)
+        onViewDataChanged(viewData.character)
+    }
+
     fun saveCharacter() {
         repository.saveCharacter(viewData.character)
-        originalCharacter = viewData.getCopyOfCharacter()
+        originalCharacter = viewData.getDeepCopyOfCharacter()
     }
 
     fun setCharacterName(nameAsString: String) {

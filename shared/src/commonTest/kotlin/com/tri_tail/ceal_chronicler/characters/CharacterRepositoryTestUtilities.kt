@@ -8,8 +8,7 @@ class CharacterRepositoryTestUtilities(private val repository: CharacterReposito
         return character.nameAsString
     }
 
-    fun addDummyCharacter(): CharacterId{
-        val character = TestCharacter.build()
+    fun addCharacter(character: Character): CharacterId{
         repository.saveCharacter(character)
         return character.id
     }

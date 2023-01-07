@@ -1695,6 +1695,18 @@
     * And a good thing I did, because I did indeed run into another failure there
     * I now got it to work as intended  by also making a deep copy when the character is put into the repository
   * However, now a test I added earlier fails, because for some strange reason, the deep copy does not copy the `CharacterId` correctly
+    * maybe it's because `CharacterId` is not a data class
+    * It took me some while, but now the deep copy of a `Character` is correctly recognized as the equal of the original
+  * Okay, with that all the `CharacterRepositoryTest`s are passing
+  * What about the `CharacterModelTest`s
+    * Looks like they pass too
+* Okay, so all the backend tests are passing now, which means that any problem that persists now has to be in the frontend
+* So let's see what exciting surprises the frontend has in store for me after all this
+  * So, the "Discard Changes" button is not working anymore...
+  * ...but apart from that, the rest seems to work as intended now
+  * Looks like I don't have a test for the `CharacterModel` yet that tests the reset functionality. Better add that and see if that's where the problem lies before I try touching the Frontend
+    * Yes, as expected, the test fails, so that means that the error lies in the `CharacterModel`, which is good, because there it'S much easier to fix than in the frontend
+    * Once again, a deep copy fixed that
 
 
 
@@ -1777,7 +1789,19 @@
 
 ## Testing
 
-* Not tested yet
+* Overall: Neutral (0)
+
+* (+) Unit tests work fine
+
+* (-) Coverage does not work
+
+  * Throws error:
+
+    * ````
+      Kotlin: [Internal Error] java.lang.IllegalStateException: The provided plugin androidx.compose.compiler.plugins.kotlin.ComposeComponentRegistrar is not compatible with this version of compiler
+      ````
+
+* Surface tests were not evaluated, since I did not get that far
 
 ## Project load times
 

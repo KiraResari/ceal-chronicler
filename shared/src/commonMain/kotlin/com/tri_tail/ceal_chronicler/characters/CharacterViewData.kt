@@ -16,7 +16,7 @@ data class CharacterViewData(val character: Character) : ViewData() {
         character.weaponAsString = weaponAsString
     }
 
-    fun getCopyOfCharacter(): Character {
-        return character.copy()
+    fun getDeepCopyOfCharacter(): Character {
+        return character.deepCopy()
     }
 }
