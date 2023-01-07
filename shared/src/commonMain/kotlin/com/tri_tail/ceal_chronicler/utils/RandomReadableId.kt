@@ -1,9 +1,12 @@
 package com.tri_tail.ceal_chronicler.utils
 
-import java.util.UUID
+import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
-open class RandomReadableId {
-    val id: UUID = UUID.randomUUID()
+@Serializable
+data class RandomReadableId(
+    val id: Long = System.currentTimeMillis() + Random.nextLong(9999)
+) {
     private val adjectives = listOf(
         "Alert",
         "Bold",
@@ -32,7 +35,7 @@ open class RandomReadableId {
         "Yummy",
         "Zesty"
     )
-    private val adjective = adjectives.random()
+    private val adjective = adjectives[id.mod(adjectives.size)]
     private val animals = listOf(
         "Ape",
         "Bear",
@@ -61,7 +64,7 @@ open class RandomReadableId {
         "Yak",
         "Zebra"
     )
-    private val animal = animals.random()
+    private val animal = animals[(id / 10).mod(animals.size)]
     private val letters = listOf(
         "Alpha",
         "Beta",
@@ -88,10 +91,10 @@ open class RandomReadableId {
         "Psi",
         "Omega",
     )
-    private val letter = letters.random()
+    private val letter = letters[(id / 100).mod(letters.size)]
     private val readableId = "$adjective $animal $letter"
 
-    override fun toString(): String{
+    override fun toString(): String {
         return readableId
     }
 }

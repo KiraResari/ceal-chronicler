@@ -1688,6 +1688,13 @@
     * This seems more helpful:
       * https://stackoverflow.com/questions/47359496/kotlin-data-class-copy-method-not-deep-copying-all-members
       * °sigh° and that needs more dependencies =>,<=
+      * In the end, I ended up making `Character` and all of its children `@Serializable` over this, which is probably something I would have done anyway sooner or later, and JSON conversion was also somewhere on my agenda, so strictly speaking this isn't even extra effort
+      * Still, it somehow bothers me that the best Kotlin has to offer for deep copies is "Serialize and Deserialize the object"
+  * Anyway, with that, the test passes correctly now
+  * However, since this caused me so much pain, I will now write a few more tests to cover other possible failing cases
+    * And a good thing I did, because I did indeed run into another failure there
+    * I now got it to work as intended  by also making a deep copy when the character is put into the repository
+  * However, now a test I added earlier fails, because for some strange reason, the deep copy does not copy the `CharacterId` correctly
 
 
 

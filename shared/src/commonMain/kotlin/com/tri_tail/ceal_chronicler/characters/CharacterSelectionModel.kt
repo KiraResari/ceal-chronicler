@@ -11,7 +11,7 @@ class CharacterSelectionModel(private val repository: CharacterRepository): Base
 
     @Subscribe
     fun onAddCharacterEvent(event: AddCharacterEvent){
-        repository.addCharacter(event.character)
+        repository.saveCharacter(event.character)
         onAvailableCharactersUpdate(repository.getCharacters())
     }
 
@@ -24,6 +24,6 @@ class CharacterSelectionModel(private val repository: CharacterRepository): Base
     }
 
     fun addCharacter(character: Character) {
-        repository.addCharacter(character)
+        repository.saveCharacter(character)
     }
 }

@@ -10,13 +10,8 @@ class CharacterRepository {
         return ArrayList(characters.values);
     }
 
-    fun addCharacter(character: Character) {
-        characters[character.id] = character;
-    }
-
     fun saveCharacter(character: Character) {
-        val characterId = character.id
-        characters[characterId] = character
+        characters[character.id] = character.deepCopy();
     }
 
     fun getCharacter(characterId: CharacterId): Optional<Character> {
