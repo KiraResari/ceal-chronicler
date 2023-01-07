@@ -1830,6 +1830,8 @@
 
 * If that proves easier than KMP, then this project will be abandoned at this point
 
+[Total time elapsed: 50.25 hours]
+
 
 
 # ⚓
