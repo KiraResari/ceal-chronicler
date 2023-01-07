@@ -30,11 +30,15 @@ fun DisplayCharacterView(viewData: CharacterViewData, koin: Koin) {
     var weaponDisplayString by remember {
         mutableStateOf(model.viewData.character.weaponAsString)
     }
+    var characterEqualsOriginal by remember {
+        mutableStateOf(model.viewData.characterEqualsOriginal)
+    }
 
     model.onViewDataChanged = {
-        nameDisplayString = it.nameAsString
-        speciesDisplayString = it.speciesAsString
-        weaponDisplayString = it.weaponAsString
+        nameDisplayString = it.character.nameAsString
+        speciesDisplayString = it.character.speciesAsString
+        weaponDisplayString = it.character.weaponAsString
+        characterEqualsOriginal = it.characterEqualsOriginal
     }
 
     Card(
@@ -98,13 +102,16 @@ fun DisplayCharacterView(viewData: CharacterViewData, koin: Koin) {
                     backgroundColor = textFieldBackgroundColor
                 )
             )
-            Spacer(modifier = Modifier.height(5.dp))
-            Row {
+            if (characterEqualsOriginal) {
                 DisplayBackButton()
-                Spacer(modifier = Modifier.width(5.dp))
-                DisplayDiscardButton()
-                Spacer(modifier = Modifier.width(5.dp))
-                DisplaySaveButton()
+            } else {
+                Row {
+                    DisplayDiscardButton()
+                    Spacer(modifier = Modifier.width(5.dp))
+                    DisplaySaveButton()
+                }
+                DisplayBackWithoutSavingButton()
+
             }
         }
     }
@@ -114,9 +121,19 @@ fun DisplayCharacterView(viewData: CharacterViewData, koin: Koin) {
 private fun DisplayBackButton() {
     Button(
         onClick = { clickBackButton() },
-        colors = ButtonDefaults.buttonColors(backgroundColor = cancelButtonColor)
+        colors = ButtonDefaults.buttonColors(backgroundColor = neutralButtonColor)
     ) {
         Text(text = "↩ Back")
+    }
+}
+
+@Composable
+private fun DisplayBackWithoutSavingButton() {
+    Button(
+        onClick = { clickBackButton() },
+        colors = ButtonDefaults.buttonColors(backgroundColor = cancelButtonColor)
+    ) {
+        Text(text = "↩ Back (without saving)")
     }
 }
 

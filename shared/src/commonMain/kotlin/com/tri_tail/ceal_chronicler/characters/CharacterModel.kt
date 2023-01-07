@@ -10,8 +10,10 @@ class CharacterModel(
 ) : BaseModel() {
 
     var originalCharacter = viewData.getDeepCopyOfCharacter()
+    val characterEqualsOriginal
+        get() = viewData.character == originalCharacter
 
-    var onViewDataChanged: ((Character) -> Unit) = {}
+    var onViewDataChanged: ((CharacterViewData) -> Unit) = {}
 
     @Subscribe
     fun onResetCharacterInputEvent(event: ResetCharacterInputEvent) {
@@ -24,25 +26,39 @@ class CharacterModel(
     }
 
     fun resetCharacter() {
-        viewData = CharacterViewData(originalCharacter)
-        onViewDataChanged(viewData.character)
+        viewData = CharacterViewData(originalCharacter.deepCopy())
+        checkIfCharacterEqualsOriginal()
+        onViewDataChanged(viewData)
     }
 
     fun saveCharacter() {
         repository.saveCharacter(viewData.character)
         originalCharacter = viewData.getDeepCopyOfCharacter()
+        checkIfCharacterEqualsOriginal()
+        onViewDataChanged(viewData)
     }
 
     fun setCharacterName(nameAsString: String) {
         viewData.setCharacterName(nameAsString)
+        checkIfCharacterEqualsOriginal()
+        onViewDataChanged(viewData)
     }
 
     fun setCharacterSpecies(speciesAsString: String) {
         viewData.setCharacterSpecies(speciesAsString)
+        checkIfCharacterEqualsOriginal()
+        onViewDataChanged(viewData)
     }
 
     fun setCharacterWeapon(weaponAsString: String) {
         viewData.setCharacterWeapon(weaponAsString)
+        checkIfCharacterEqualsOriginal()
+        onViewDataChanged(viewData)
+    }
+
+    private fun checkIfCharacterEqualsOriginal() {
+        viewData.characterEqualsOriginal =
+            (viewData.character == originalCharacter)
     }
 
 }

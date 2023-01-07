@@ -1707,6 +1707,9 @@
   * Looks like I don't have a test for the `CharacterModel` yet that tests the reset functionality. Better add that and see if that's where the problem lies before I try touching the Frontend
     * Yes, as expected, the test fails, so that means that the error lies in the `CharacterModel`, which is good, because there it'S much easier to fix than in the frontend
     * Once again, a deep copy fixed that
+  * Now the basic character editing behavior works as intended
+* Finally, I just want to add a little bit dynamic behavior to the buttons if I can
+  * I now managed to do that
 
 
 
