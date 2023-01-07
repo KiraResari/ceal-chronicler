@@ -111,7 +111,6 @@ fun DisplayCharacterView(viewData: CharacterViewData, koin: Koin) {
                     DisplaySaveButton()
                 }
                 DisplayBackWithoutSavingButton()
-
             }
         }
     }

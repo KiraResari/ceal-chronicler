@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace = Namespaces.cealChroniclerAndroid
-    compileSdk = Versions.sdk
+    compileSdk = Versions.targetSdk
     defaultConfig {
         applicationId = Namespaces.cealChroniclerAndroid
-        minSdk = Versions.sdk
-        targetSdk = Versions.sdk
+        minSdk = Versions.minSdk
+        targetSdk = Versions.targetSdk
         versionCode = 1
         versionName = "1.0"
     }

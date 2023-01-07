@@ -8,10 +8,10 @@ plugins {
 
 android {
     namespace = Namespaces.cealChroniclerAndroid
-    compileSdk =  Versions.sdk
+    compileSdk =  Versions.targetSdk
     defaultConfig {
-        minSdk = Versions.sdk
-        targetSdk = Versions.sdk
+        minSdk = Versions.minSdk
+        targetSdk = Versions.targetSdk
     }
     buildTypes {
         getByName("release") {

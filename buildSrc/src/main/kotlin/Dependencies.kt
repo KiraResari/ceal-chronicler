@@ -5,7 +5,8 @@ object Versions{
         const val kotlin = "1.7.10"
         const val serialization = "1.8.0"
     }
-    const val sdk = 33
+    const val minSdk = 30
+    const val targetSdk = 33
     const val compose = "1.2.2"
     const val androidCompose = "1.3.1"
     const val activityCompose = "1.5.1"

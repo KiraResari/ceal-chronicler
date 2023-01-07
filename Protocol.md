@@ -179,6 +179,8 @@
 
 * This is as far as I'm getting with this today
 
+[Total time elapsed: 6 hours]
+
 
 
 # 23-Dec-2022
@@ -342,6 +344,8 @@
 
 * This is as far as I'm getting with this today
 
+[Total time elapsed: 11.25 hours]
+
 
 
 # 24-Dec-2022
@@ -481,6 +485,8 @@
   * I now did that
 
 * And this is as far as I'm getting with this today
+
+[Total time elapsed: 17.5 hours]
 
 
 
@@ -786,6 +792,8 @@
 
 * This is as far as I'm getting with this today
 
+[Total time elapsed: 23.75 hours]
+
 
 
 # 28-Dec-2022
@@ -926,6 +934,8 @@
 * But at least, I did learn the basic truth about why my event system could not update the view, so I guess that's one thing
 
 * Next time, I think I'll look at the `kmpf-materials` sample project again, because I think they did something with models in an advanced tutorial, so mayhap I can copycat something from there
+
+[Total time elapsed: 26 hours]
 
 
 
@@ -1165,6 +1175,8 @@
 
 * So this is as far as I'm getting with this today
 
+[Total time elapsed: 30 hours]
+
 
 
 # 2-Jan-2023
@@ -1300,6 +1312,8 @@
 
 * This is as far as I'm getting today with this
 
+[Total time elapsed: 34.25 hours]
+
 
 
 # 4-Jan-2023
@@ -1379,6 +1393,8 @@
     * In fact, looking back, I could probably have avoided SO MANY problems had I done that from the start
 
 * This is as far as I'm getting with this today
+
+[Total time elapsed: 39.25 hours]
 
 
 
@@ -1668,14 +1684,20 @@
 
 * I'm ending this for today
 
+[Total time elapsed: 45.75 hours]
+
 
 
 # 7-Jan-2023
 
 * Today is the final day that I allotted for this year's winter project
+
 * Thus, I will aim to bring this to some sort of clean finish today
+
 * That's easier said than done, since last turn I left it in some sort of broken state
+
 * The main issue is that apparently there's some sort of unintended feedback into the repository, with objects in the repository being modified by changes to objects gotten out of the repository
+
   * I did flounder around a lit there, and probably ended up making some really weird things in the code
   * After ending my work on it yesterday, I thought about that, and came to the conclusion that probably what I need to do is make sure that the Character gets thoroughly copied when it is returned from the repository, so that all members of the returned object are completely independent of what  is in the database
   * I now wrote a test that confirms my suspicions
@@ -1700,22 +1722,113 @@
   * Okay, with that all the `CharacterRepositoryTest`s are passing
   * What about the `CharacterModelTest`s
     * Looks like they pass too
+
 * Okay, so all the backend tests are passing now, which means that any problem that persists now has to be in the frontend
+
 * So let's see what exciting surprises the frontend has in store for me after all this
+
   * So, the "Discard Changes" button is not working anymore...
   * ...but apart from that, the rest seems to work as intended now
   * Looks like I don't have a test for the `CharacterModel` yet that tests the reset functionality. Better add that and see if that's where the problem lies before I try touching the Frontend
     * Yes, as expected, the test fails, so that means that the error lies in the `CharacterModel`, which is good, because there it'S much easier to fix than in the frontend
     * Once again, a deep copy fixed that
   * Now the basic character editing behavior works as intended
+
 * Finally, I just want to add a little bit dynamic behavior to the buttons if I can
+
   * I now managed to do that
 
+* And with that, time eludes me
 
+* So, in the end, I didn't get to do persistence 
 
+* However, I still have about an hour to try and see if I can deploy the app on my cell phone
 
+  * I tried figuring out how to change the app icon. However, the article I found looks like it will take over an hour to get it to work, so I'll leave it be 
 
+  * The instructions for how to deploy the app on my phone are here:
 
+    * https://developer.android.com/studio/run/device
+    * However, they are a bit... shaky
+    * I now tried to install the Samsung Android USB driver from here:
+      * https://developer.samsung.com/android-usb-driver
+    * However, in the Android Studio Device Manager, my phone was not displayed despite me being able to access it in the Windows explorer
+    * I tried restarting Android Studio, but my phone is still not displayed in the Device Manager under "Physical"
+    * Well, let's try going over the steps one at a time
+      * "Set up a device for development"
+        * "1. On the device, open the **Settings** app, select **Developer options**, and then enable **USB debugging** (if applicable)."
+          * I did manage to get to the Developer Settings on my phone, but there's no option "enable USB debugging"
+          * I tried following this:
+            * https://www.verizon.com/support/knowledge-base-223020/
+          * Okay, so turns out that "Developer Options" is something else than "Developer Settings" =>,<=
+          * Okay, so knowing that, I was now able to turn it on
+        * And now I can also see my phone in Android Studio
+
+  * So now let's see if I can start the Ceal Chronicler there
+
+  * Mmmmh, nope, the error being:
+
+    * ````
+      Installation did not succeed.
+      The application could not be installed: INSTALL_FAILED_OLDER_SDK
+      
+      List of apks:
+      [0] 'E:\projects\ceal-chronicler\androidApp\build\intermediates\apk\debug\androidApp-debug.apk'
+      The application's minSdkVersion is newer than the device API level.
+      Retry
+      Failed to launch an application on all devices
+      ````
+
+    * Okay, that's something understandable, though it would have been great if it also told me what my phone's  API level is
+
+    * In my phone settings, it says the "Android version" is 11
+
+    * Meanwhile, in my `androidApp/build.gradle.sdk` I have set the `minSdk` to 33
+
+    * Of course, I have no idea if I am even comparing the correct values here
+
+    * Meanwhile, the Android Studio Device Manager says the `API` of my phone is 30, which does sound like what the error message relates to
+
+    * Let's see if I can just set the minimum API level of my app to 30 then
+
+    * Okay, so this time, it failed with this error:
+
+      * ````
+        Manifest merger failed with multiple errors, see logs
+        ````
+
+      * Very expressive. What logs?
+
+      * This post:
+
+        * https://stackoverflow.com/questions/35842955/manifest-merger-failed-with-multiple-errors-in-android-studio
+        * ...says to check the Merged Manifest for errors, but none are displayed to me there 
+
+      * Ah, okay, so scrolling up on the top level of the gradle build, I can see this:
+
+        * ````
+          E:\projects\ceal-chronicler\androidApp\src\main\AndroidManifest.xml Error:
+          	uses-sdk:minSdkVersion 30 cannot be smaller than version 33 declared in library [:shared-ui] E:\projects\ceal-chronicler\shared-ui\build\intermediates\merged_manifest\debug\AndroidManifest.xml as the library might be using APIs not available in 30
+          	Suggestion: use a compatible library with a minSdk of at most 30,
+          		or increase this project's minSdk version to at least 33,
+          		or use tools:overrideLibrary="com.tri_tail.ceal_chronicler.android" to force usage (may lead to runtime failures)
+          ````
+
+        * I now changed the minimum sdk to 30 in the `shared-ui` module too
+
+  * BREAKTHROUGH! We won!
+
+    * Now the Ceal Chronicler works on my phone!
+    * Granted, with a cryptic name, and the default icon, and no functionality, but still!
+    * With that, I've deployed the first app to a mobile device ever since my internship at HandyGames over 10 years ago!
+
+* And that's as far as I'm getting with this today
+
+* With that, Kotlin Multiplatform's evaluation period is coming to an end
+
+* Next, it is planned that I try to create the same project in Flutter
+
+* If that proves easier than KMP, then this project will be abandoned at this point
 
 
 
@@ -1818,6 +1931,12 @@
 * Overall: Very Bad (---)
 * (---) even a very basic program with no media is already 129MB big, which is roughly three orders of magnitude above what I'd expect
   * For contrast, that's over twice as big as the maximum size that Nintendo 64 games could be 
+
+## Deployment
+
+* Overall: Neutral (0)
+* (-) needs an extra Mac machine to deploy to iOS
+* (+) but successfully deploying to Android is possible with less than an hour's effort the first time
 
 # Knowledgebase
 
