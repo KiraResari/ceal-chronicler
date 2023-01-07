@@ -1538,6 +1538,157 @@
 
       * After I fixed that, resetting now works
 
+    * Next, the button that commits the changes to the repository
+
+      * I tried doing some clever tricks there, and it blew up in my face with new exciting errors
+
+        * This time, Koin is the issue:
+
+          * ````
+            Caused by: org.koin.core.error.NoBeanDefFoundException: No definition found for class:'com.tri_tail.ceal_chronicler.characters.Character' q:''. Check your definitions!
+            ````
+
+          * That happens in the line:
+
+            * ````kotlin
+                  val model = koin.get<CharacterModel> { parametersOf(characterViewData) }
+              ````
+
+          * That is exciting, because the `CharacterModel` does not need a `Character` bean:
+
+            * ````kotlin
+              class CharacterModel(var characterViewData: CharacterViewData): BaseModel() {
+              ````
+
+          * I wonder if this is a caching error?
+
+            * Yes, looks like it. After cleaning the project, this worked again
+
+          * What did not work, however, was the saving of the strings in the view data
+
+          * Continuing, more troubles and confusion
+
+            * As I write this, I am observing that I can make changes and save them, but when I open the same character again, the changes are not there
+
+            * Okay, so as best as I can tell, the on-click event of the character buttons do not get updated when the characters change (even though the text does), because why should they? =<,<= 
+
+            * I tried fixing it by referring to the `CharacterId` instead and having it read the character from the repository them, but it still doesn't work
+
+            * I am running an in-depth check now
+
+              * When first I open Idra, she is read from the repository as:
+
+                * ````
+                  Character(id=Great ApeDelta, name=CharacterName(name=Idra Kegis), species=Species(name=Dragon), weapon=Weapon(name=Claws))
+                  ````
+
+              * I then renamed her to "Idra Kegisadas"
+
+              * When I then save her, she is saved as:
+
+                * ````
+                  Character(id=Great ApeDelta, name=CharacterName(name=Idra Kegis), species=Species(name=Dragon), weapon=Weapon(name=Claws))
+                  ````
+
+              * There I can already see that the saving does not seem to be correct
+
+              * Okay, so it would seem that for some strange reason, and despite my intentions, setting `nameAsString` does not actually set the name as string
+
+            * I now changed how the properties work by using getters and setters instead of assining the variable directly
+
+            * Now I'm back at the problem again that the changes get saved despite me not pressing "save"
+
+            * I'm getting sick of this
+
+            * Let me see if I can write some tests for this. If those pass, then at least I can narrow it down to "stupid frontend problem", and if they don't, then that might help me track down the cause of this stupid issue
+
+              * I do note with delight here that I can right-click on the class, and then on "Generate" to create tests
+
+                * ...it _did_ add it to the wrong package though ("androidTest" instead of "commonTest"), and I could not find a way to change that
+
+              * And now it complains this:
+
+                * ````
+                  KoinApplication has not been started
+                  java.lang.IllegalStateException: KoinApplication has not been started
+                  	at org.koin.core.context.GlobalContext.get(GlobalContext.kt:36)
+                  	at org.koin.core.component.KoinComponent$DefaultImpls.getKoin(KoinComponent.kt:33)
+                  	at org.koin.test.KoinTest$DefaultImpls.getKoin(KoinTest.kt:32)
+                  	at com.tri_tail.ceal_chronicler.characters.CharacterModelTest.getKoin(CharacterModelTest.kt:8)
+                  	at com.tri_tail.ceal_chronicler.characters.CharacterModelTest$special$$inlined$inject$default$1.invoke(KoinTest.kt:51)
+                  	at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:74)
+                  	at com.tri_tail.ceal_chronicler.characters.CharacterModelTest.getRepository(CharacterModelTest.kt:9)
+                  [...]
+                  ````
+
+                * Even though this test is essentially the same as the one I wrote before where it works
+
+                * Turns out that was because I could not instantiate the `CharacterRepositoryTestUtilities` because those needed the `CharacterRepository` from the Koin Context, and while I was able to write it like this without any problems:
+
+                  * ````kotlin
+                        private val repository: CharacterRepository by inject()
+                        private val repositoryTestUtilities = CharacterRepositoryTestUtilities(repository);
+                    ````
+
+                * ...that then caused this error, because the Koin Context is only set up in the `setup()` function
+
+                * I now had to write it like this instead:
+
+                  * ````kotlin
+                        private val repository: CharacterRepository by inject()
+                        private lateinit var repositoryTestUtilities: CharacterRepositoryTestUtilities;
+                    
+                        @BeforeTest
+                        override fun setup() {
+                            super.setup()
+                            repositoryTestUtilities = CharacterRepositoryTestUtilities(repository)
+                        }
+                    ````
+
+                * While this now works, I can tell that Kotlin is not entirely happy with this, because I have to use the `lateinit` keyword here
+
+              * Okay, so now I have written a test, and that one demonstrates that contrary to my intentions, changing the name in the view data does indeed already change it in the repository too
+
+                * I tried a bunch of things to fix this, such as copying the character at key moments (though I already did that before too), but it still doesn't fix this test
+                * Okay, so, in-depth-analysis
+                  * When `setCharacterName` is called, the addressed instance of `Character` is @3473
+                  * The `CharacterId` of that Character is "Ill Goat Nu"
+                  * At that time, the original copy of that `Character` in the repository is @3472
+                  * Those are different, which is good
+                  * However, what about the values they hold?
+                  * @3472 holds the `CharacterName` @3477
+                  * @3473 holds the `CharacterName` @3477
+                  * Okay, so I guess that explains it
+                  * Although the character was copied, the references were not
+                * I now tried adding a `copy` method to the `Character`, but that didn't fix it either
+
+              * It feels like I'm in a dead end, going in circles, etc
+
+            * This is not going anywhere
+
+* I'm ending this for today
+
+
+
+# 7-Jan-2023
+
+* Today is the final day that I allotted for this year's winter project
+* Thus, I will aim to bring this to some sort of clean finish today
+* That's easier said than done, since last turn I left it in some sort of broken state
+* The main issue is that apparently there's some sort of unintended feedback into the repository, with objects in the repository being modified by changes to objects gotten out of the repository
+  * I did flounder around a lit there, and probably ended up making some really weird things in the code
+  * After ending my work on it yesterday, I thought about that, and came to the conclusion that probably what I need to do is make sure that the Character gets thoroughly copied when it is returned from the repository, so that all members of the returned object are completely independent of what  is in the database
+  * I now wrote a test that confirms my suspicions
+  * Now to get it to pass
+    * As I feared, simply copying the changed character does not suffice
+    * What I think I need here is a Deep Copy
+    * This looks like a good place to look that up:
+      * https://www.baeldung.com/kotlin/deep-copy-data-class
+      * Ugggh, that was just a long article that effectively said "sorry, but Kotlin can't do that, you have to implement it yourself" =>,<=
+    * This seems more helpful:
+      * https://stackoverflow.com/questions/47359496/kotlin-data-class-copy-method-not-deep-copying-all-members
+      * °sigh° and that needs more dependencies =>,<=
+
 
 
 
@@ -1554,7 +1705,7 @@
 
 ## Framework
 
-* Overall: Extremely Bad (----)
+* Overall: Extremely Bad (-----)
 * Kotlin Multiplatform
 * (+) Data classes
   * ...they don't allow for inheritance though
@@ -1566,6 +1717,7 @@
 * (--) Kotlin requires classes to be explicitly open to extension, which violates the OCP
 * (-) The `remember` state logic is an intransparent mess that is complicated to get right
 * (--) Requires views to be functions instead of classes
+* (-) Kotlin does not provide an easy way to do deep copies, and shallow copies lead to really interesting behavior with strings
 
 ## IDE
 
@@ -1608,7 +1760,9 @@
 
 * Overall: Kinda good (+)
 * Uses Koin: https://insert-koin.io
-* (+) Works fine and without any trouble
+* (+) Works fine and without any major trouble
+  * Observed once: Got hung up on a changed signature; worked again after cleaning the project
+
 
 ## Persistence
 

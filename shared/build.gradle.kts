@@ -1,6 +1,7 @@
 plugins {
     kotlin(Dependencies.Plugins.kotlinMultiplatform)
     id(Dependencies.Plugins.androidLibrary)
+    kotlin(Dependencies.Plugins.serialization) version Versions.Plugins.serialization
 }
 
 kotlin {
@@ -27,6 +28,7 @@ kotlin {
             dependencies {
                 implementation(Dependencies.eventBus)
                 implementation(Dependencies.Koin.core)
+                implementation(Dependencies.serialization)
             }
         }
         val commonTest by getting {

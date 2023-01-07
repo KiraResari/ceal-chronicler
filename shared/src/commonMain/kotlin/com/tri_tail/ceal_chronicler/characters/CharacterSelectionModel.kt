@@ -11,12 +11,12 @@ class CharacterSelectionModel(private val repository: CharacterRepository): Base
 
     @Subscribe
     fun onAddCharacterEvent(event: AddCharacterEvent){
-        repository.add(event.character)
+        repository.addCharacter(event.character)
         onAvailableCharactersUpdate(repository.getCharacters())
     }
 
-    fun get(characterId: CharacterId): Optional<Character> {
-        return repository.get(characterId)
+    fun getCharacter(characterId: CharacterId): Optional<Character>{
+        return repository.getCharacter(characterId)
     }
 
     fun getCharacters(): Iterable<Character> {
@@ -24,6 +24,6 @@ class CharacterSelectionModel(private val repository: CharacterRepository): Base
     }
 
     fun addCharacter(character: Character) {
-        repository.add(character)
+        repository.addCharacter(character)
     }
 }

@@ -1,42 +1,29 @@
 package com.tri_tail.ceal_chronicler.characters
 
-import com.tri_tail.ceal_chronicler.items.Weapon
 import java.util.*
 
 class CharacterRepository {
 
     private val characters = HashMap<CharacterId, Character>();
 
-    init {
-        add(
-            Character(
-                name = CharacterName("Sylvia Zerin"),
-                species = Species("Nefilim"),
-                weapon = Weapon("Axe")
-            )
-        )
-        add(
-            Character(
-                name = CharacterName("Idra Kegis"),
-                species = Species("Dragon"),
-                weapon = Weapon("Claws")
-            )
-        )
+    fun getCharacters(): List<Character> {
+        return ArrayList(characters.values);
     }
 
-    fun getCharacters(): Iterable<Character> {
-        return characters.values;
+    fun addCharacter(character: Character) {
+        characters[character.id] = character;
     }
 
-    fun get(characterId: CharacterId): Optional<Character> {
-        val character = characters.get(characterId)
+    fun saveCharacter(character: Character) {
+        val characterId = character.id
+        characters[characterId] = character
+    }
+
+    fun getCharacter(characterId: CharacterId): Optional<Character> {
+        val character = characters[characterId]
         if(character == null){
             return Optional.empty()
         }
-        return Optional.of(character)
-    }
-
-    fun add(character: Character) {
-        characters.put(character.id, character);
+        return Optional.of(character.deepCopy())
     }
 }

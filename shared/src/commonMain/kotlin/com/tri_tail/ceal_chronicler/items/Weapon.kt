@@ -1,5 +1,8 @@
 package com.tri_tail.ceal_chronicler.items
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Weapon(
-    override var name: String
+    var name: String
 ): Item(name)

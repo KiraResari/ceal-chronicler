@@ -89,7 +89,7 @@ open class RandomReadableId {
         "Omega",
     )
     private val letter = letters.random()
-    private val readableId = adjective + " " + animal + "" + letter
+    private val readableId = "$adjective $animal $letter"
 
     override fun toString(): String{
         return readableId

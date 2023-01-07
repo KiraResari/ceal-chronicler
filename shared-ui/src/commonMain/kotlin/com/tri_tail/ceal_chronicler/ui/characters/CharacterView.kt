@@ -10,25 +10,31 @@ import androidx.compose.ui.unit.dp
 import com.tri_tail.ceal_chronicler.characters.*
 import com.tri_tail.ceal_chronicler.events.*
 import com.tri_tail.ceal_chronicler.theme.*
-import com.tri_tail.ceal_chronicler.utils.ValueWithOriginal
 import org.greenrobot.eventbus.EventBus
 import org.koin.core.Koin
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun DisplayCharacterView(character: Character, koin: Koin) {
-    val model = koin.get<CharacterModel> { parametersOf(character) }
-    var nameDisplayValue
-            by remember { mutableStateOf(character.nameAsString) }
-    var speciesDisplayValue
-            by remember { mutableStateOf(character.speciesAsString) }
-    var weaponDisplayValue
-            by remember { mutableStateOf(character.weaponAsString) }
+fun DisplayCharacterView(viewData: CharacterViewData, koin: Koin) {
+    val model = koin.get<CharacterModel> {
+        parametersOf(
+            viewData
+        )
+    }
+    var nameDisplayString by remember {
+        mutableStateOf(model.viewData.character.nameAsString)
+    }
+    var speciesDisplayString by remember {
+        mutableStateOf(model.viewData.character.speciesAsString)
+    }
+    var weaponDisplayString by remember {
+        mutableStateOf(model.viewData.character.weaponAsString)
+    }
 
-    model.onResetCharacterInput = {
-        nameDisplayValue = it.nameAsString
-        speciesDisplayValue = it.speciesAsString
-        weaponDisplayValue = it.weaponAsString
+    model.onViewDataChanged = {
+        nameDisplayString = it.nameAsString
+        speciesDisplayString = it.speciesAsString
+        weaponDisplayString = it.weaponAsString
     }
 
     Card(
@@ -50,14 +56,17 @@ fun DisplayCharacterView(character: Character, koin: Koin) {
                 .padding(15.dp)
         ) {
             Text(
-                text = nameDisplayValue,
+                text = nameDisplayString,
                 style = typography.h1
             )
             Spacer(modifier = Modifier.height(5.dp))
             TextField(
                 label = { Text(text = "Name:") },
-                value = nameDisplayValue,
-                onValueChange = { nameDisplayValue = it },
+                value = nameDisplayString,
+                onValueChange = {
+                    nameDisplayString = it
+                    model.setCharacterName(it)
+                },
                 textStyle = typography.body1,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = textFieldBackgroundColor
@@ -66,8 +75,11 @@ fun DisplayCharacterView(character: Character, koin: Koin) {
             Spacer(modifier = Modifier.height(5.dp))
             TextField(
                 label = { Text(text = "Species:") },
-                value = speciesDisplayValue,
-                onValueChange = { speciesDisplayValue = it },
+                value = speciesDisplayString,
+                onValueChange = {
+                    speciesDisplayString = it
+                    model.setCharacterSpecies(it)
+                },
                 textStyle = typography.body1,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = textFieldBackgroundColor
@@ -76,8 +88,11 @@ fun DisplayCharacterView(character: Character, koin: Koin) {
             Spacer(modifier = Modifier.height(5.dp))
             TextField(
                 label = { Text(text = "Weapon:") },
-                value = weaponDisplayValue,
-                onValueChange = { weaponDisplayValue = it },
+                value = weaponDisplayString,
+                onValueChange = {
+                    weaponDisplayString = it
+                    model.setCharacterWeapon(it)
+                },
                 textStyle = typography.body1,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = textFieldBackgroundColor
@@ -88,6 +103,8 @@ fun DisplayCharacterView(character: Character, koin: Koin) {
                 DisplayBackButton()
                 Spacer(modifier = Modifier.width(5.dp))
                 DisplayDiscardButton()
+                Spacer(modifier = Modifier.width(5.dp))
+                DisplaySaveButton()
             }
         }
     }
@@ -97,7 +114,7 @@ fun DisplayCharacterView(character: Character, koin: Koin) {
 private fun DisplayBackButton() {
     Button(
         onClick = { clickBackButton() },
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+        colors = ButtonDefaults.buttonColors(backgroundColor = cancelButtonColor)
     ) {
         Text(text = "↩ Back")
     }
@@ -111,14 +128,29 @@ private fun clickBackButton() {
 @Composable
 private fun DisplayDiscardButton() {
     Button(
-        onClick = { restoreOriginalValues() },
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+        onClick = { clickDiscardButton() },
+        colors = ButtonDefaults.buttonColors(backgroundColor = cancelButtonColor)
     ) {
         Text(text = "✖ Discard Changes")
     }
 }
 
-fun restoreOriginalValues() {
+fun clickDiscardButton() {
     val eventBus = EventBus.getDefault()
     eventBus.post(ResetCharacterInputEvent())
+}
+
+@Composable
+private fun DisplaySaveButton() {
+    Button(
+        onClick = { clickSaveButton() },
+        colors = ButtonDefaults.buttonColors(backgroundColor = confirmButtonColor)
+    ) {
+        Text(text = "✔ Save Changes")
+    }
+}
+
+fun clickSaveButton() {
+    val eventBus = EventBus.getDefault()
+    eventBus.post(SaveCharacterInputEvent())
 }

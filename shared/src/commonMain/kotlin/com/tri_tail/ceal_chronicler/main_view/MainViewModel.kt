@@ -19,7 +19,7 @@ class MainViewModel: BaseModel() {
     }
 
     @Subscribe
-    fun onSelectCharacterEvent(event: SelectCharacterEvent) {
+    fun onOpenCharacterViewEvent(event: OpenCharacterViewEvent) {
         viewData = CharacterViewData(event.character)
         onStateUpdate(viewData)
     }

@@ -3,6 +3,7 @@ object Versions{
     object Plugins{
         const val android = "7.2.2"
         const val kotlin = "1.7.10"
+        const val serialization = "1.8.0"
     }
     const val sdk = 33
     const val compose = "1.2.2"
@@ -11,6 +12,7 @@ object Versions{
     const val jvm = "11"
     const val icerockResources = "0.20.1"
     const val eventBus = "3.3.1"
+    const val serialization = "1.4.1"
     object Koin{
         const val core = "3.3.2"
         const val android = "3.3.2"
@@ -29,6 +31,7 @@ object Dependencies{
     const val androidGradlePlugin = "com.android.tools.build:gradle:${Versions.Plugins.android}"
     const val kotlinGradlePlugin= "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.Plugins.kotlin}"
     const val eventBus = "org.greenrobot:eventbus:${Versions.eventBus}"
+    const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serialization}"
     object Koin {
         const val core = "io.insert-koin:koin-core:${Versions.Koin.core}"
         const val test = "io.insert-koin:koin-test:${Versions.Koin.core}"
@@ -63,6 +66,7 @@ object Dependencies{
         const val androidApplication = "com.android.application"
         const val compose = "org.jetbrains.compose"
         const val icerockMultiplatformResources = "dev.icerock.mobile.multiplatform-resources"
+        const val serialization = "plugin.serialization"
     }
     object Moko{
         const val resources = "dev.icerock.moko:resources:${Versions.icerockResources}"

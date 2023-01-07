@@ -64,25 +64,33 @@ private fun DisplayAvailableCharacters(model: CharacterSelectionModel) {
     }
 
     for (character in availableCharacters) {
-        DisplayCharacterButton(character)
+        DisplayCharacterButton(character, model)
     }
 }
 
 @Composable
 private fun DisplayCharacterButton(
-    character: Character
+    character: Character,
+    model: CharacterSelectionModel
 ) {
     Button(
-        onClick = { clickCharacterButton(character) },
+        onClick = { clickCharacterButton(character.id, model) },
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
     ) {
         Text(text = character.nameAsString)
     }
 }
 
-private fun clickCharacterButton(character: Character) {
-    val eventBus = EventBus.getDefault()
-    eventBus.post(SelectCharacterEvent(character))
+private fun clickCharacterButton(
+    characterId: CharacterId,
+    model: CharacterSelectionModel
+) {
+    val characterOption = model.getCharacter(characterId)
+    if(characterOption.isPresent()) {
+        val character = characterOption.get()
+        val eventBus = EventBus.getDefault()
+        eventBus.post(OpenCharacterViewEvent(character))
+    }
 }
 
 @Composable
